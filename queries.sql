@@ -11,10 +11,10 @@ CREATE VIEW clientsByName AS
 	FROM clients
 	ORDER BY surname, name;
 --5000
-	
+
 SELECT * FROM clientsByName;
 
-	
+
 DROP VIEW contractView;
 
 CREATE VIEW contractView AS
@@ -37,18 +37,20 @@ contract_type VARCHAR2(50),
 CONSTRAINT PK_current_clients PRIMARY KEY (clientId),
 CONSTRAINT FK_current_clients1 FOREIGN KEY (clientId) REFERENCES clients,
 CONSTRAINT FK_current_clients2 FOREIGN KEY (name) REFERENCES clients,
-CONSTRAINT FK_current_clients23 FOREIGN KEY (surname) REFERENCES clients,
+CONSTRAINT FK_current_clients3 FOREIGN KEY (surname) REFERENCES clients,
+CONSTRAINT FK_current_clients4 FOREIGN KEY (startdate) REFERENCES contracts,
+CONSTRAINT FK_current_clients5 FOREIGN KEY (enddate) REFERENCES contracts,
+CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES contracts
 );
- INSERT INTO current_clients 
-	SELECT * 
+ INSERT INTO current_clients
+	SELECT *
 	FROM clientsByName NATURAL JOIN contractView;
 
 DROP VIEW query1;
 
 CREATE VIEW query1 AS
-	SELECT * 
+	SELECT *
 	FROM clientsByName NATURAL JOIN contractView;
 --2157
-	
-SELECT * FROM query1;
 
+SELECT * FROM query1;
