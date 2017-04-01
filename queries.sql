@@ -36,11 +36,7 @@ enddate DATE,
 contract_type VARCHAR2(50),
 CONSTRAINT PK_current_clients PRIMARY KEY (clientId),
 CONSTRAINT FK_current_clients1 FOREIGN KEY (clientId) REFERENCES clients,
-CONSTRAINT FK_current_clients2 FOREIGN KEY (name) REFERENCES clients,
-CONSTRAINT FK_current_clients3 FOREIGN KEY (surname) REFERENCES clients,
-CONSTRAINT FK_current_clients4 FOREIGN KEY (startdate) REFERENCES contracts,
-CONSTRAINT FK_current_clients5 FOREIGN KEY (enddate) REFERENCES contracts,
-CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES contracts
+CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES products
 );
  INSERT INTO current_clients
 	SELECT clientId, name, surname, startdate, enddate, contract_type
