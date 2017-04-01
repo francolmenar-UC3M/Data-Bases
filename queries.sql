@@ -43,7 +43,7 @@ CONSTRAINT FK_current_clients5 FOREIGN KEY (enddate) REFERENCES contracts,
 CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES contracts
 );
  INSERT INTO current_clients
-	SELECT *
+	SELECT clientId, name, surname
 	FROM clientsByName NATURAL JOIN contractView;
 
 DROP VIEW query1;
