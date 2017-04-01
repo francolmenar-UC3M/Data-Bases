@@ -31,7 +31,7 @@ CREATE TABLE current_clients(
 clientId	VARCHAR2(15),
 name		VARCHAR2(100) NOT NULL,
 surname		VARCHAR2(100) NOT NULL,
-startdate DATE NOT NULL,
+startdate DATE,
 enddate DATE,
 contract_type VARCHAR2(50),
 CONSTRAINT PK_current_clients PRIMARY KEY (clientId),
