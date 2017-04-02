@@ -4,7 +4,6 @@
 -- ----------------------------------------------------
 DROP VIEW mostUSA;
 
-
 CREATE VIEW mostUSA AS
 	SELECT * FROM(
 	SELECT movie_title,imdb_score,
