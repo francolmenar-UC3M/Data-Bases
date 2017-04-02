@@ -5,15 +5,16 @@
 DROP VIEW join1;
 
 CREATE VIEW join1 AS
-SELECT DISTINCT actor, movie_title FROM
-CASTS NATURAL JOIN MOVIES
-WHERE country='USA';
+SELECT DISTINCT actor, title FROM
+CASTS INNER JOIN MOVIES
+WHERE country='USA'
+ON CASTS.title = MOVIES.movie_title;
 --4424
 
 DROP VIEW group1;
 
 CREATE VIEW group1 AS
-SELECT actor, count(*) top
+SELECT actor, count(actor) top
 FROM join1
 GROUP BY actor;
 --6249
@@ -26,7 +27,7 @@ SELECT actor,  rank() OVER (
 ORDER BY top desc)
 AS top_movie
 FROM group1)
-where top_movie <= 5);
+where top_movie <= 5;
 
 SELECT * FROM mostUSA;
 
