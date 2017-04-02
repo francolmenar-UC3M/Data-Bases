@@ -17,6 +17,14 @@ SELECT * FROM mostUSA;
 
 
 
+DROP VIEW join1;
+
+CREATE VIEW join1 AS
+SELECT actor, movie_title FROM
+CASTS NATURAL JOIN (MOVIES
+WHERE country='USA');
+
+SELECT * FROM join1;
 
 
 
@@ -30,4 +38,3 @@ WHERE country='USA'))
 GROUP BY actor);
 
 SELECT * FROM mostUSA2;
-
