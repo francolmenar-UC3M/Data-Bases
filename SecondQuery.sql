@@ -7,9 +7,9 @@ DROP VIEW join1;
 CREATE VIEW join1 AS
 SELECT DISTINCT actor, title FROM
 CASTS INNER JOIN MOVIES
-WHERE country='USA'
-ON CASTS.title = MOVIES.movie_title;
---4424
+ON CASTS.title = MOVIES.movie_title
+WHERE country='USA';
+--11103
 
 DROP VIEW group1;
 
@@ -17,7 +17,7 @@ CREATE VIEW group1 AS
 SELECT actor, count(actor) top
 FROM join1
 GROUP BY actor;
---6249
+--4673
 
 DROP VIEW mostUSA;
 
