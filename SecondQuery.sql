@@ -8,9 +8,7 @@ CREATE VIEW join1 AS
 SELECT DISTINCT actor, movie_title FROM
 CASTS NATURAL JOIN MOVIES
 WHERE country='USA';
-
-SELECT * FROM join1;
-
+--4424
 
 DROP VIEW group1;
 
@@ -18,18 +16,20 @@ CREATE VIEW group1 AS
 SELECT actor, count('x') top
 FROM join1
 GROUP BY actor;
-
-SELECT * FROM group1;
-
-
+--6249
 
 DROP VIEW mostUSA;
 
 CREATE VIEW mostUSA AS
+SELECT * FROM(
 SELECT actor,  rank() OVER (
-ORDER BY top) desc)
-AS top_star
-FROM group1
-where top_star <= 5);
+ORDER BY top desc)
+AS top_movie
+FROM group1)
+where top_movie <= 5);
 
 SELECT * FROM mostUSA;
+
+
+SELECT * FROM join1;
+SELECT * FROM group1;
