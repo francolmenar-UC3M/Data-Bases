@@ -8,9 +8,7 @@ DROP VIEW mostUSA;
 CREATE VIEW mostUSA AS(
 SELECT actor,
   rank() OVER (ORDER BY
-(SELECT actor FROM
-CASTS NATURAL JOIN MOVIES
-GROUP BY actor) desc)
+mostUSA2) desc)
 AS top_star
 FROM CASTS
 where top_star <= 5);
@@ -24,9 +22,9 @@ SELECT * FROM mostUSA;
 DROP VIEW mostUSA2;
 
 CREATE VIEW mostUSA2 AS(
-SELECT actor FROM
+SELECT actor, count('x') FROM
 CASTS NATURAL JOIN MOVIES
 WHERE country='USA'
-GROUP BY actor;
+GROUP BY actor);
 
 SELECT * FROM mostUSA2;
