@@ -6,9 +6,9 @@
 DROP VIEW mostUSA;
 
 CREATE VIEW mostUSA AS
-SELECT movie_title,
-  MAX(imdb_score) OVER (PARTITION BY movie_title)
+	SELECT movie_title,
+  rank() OVER (ORDER BY imdb_score desc)
   AS top_star
-FROM movies;
+	FROM movies;
 
 SELECT * FROM mostUSA;
