@@ -13,7 +13,7 @@ WHERE country='USA';
 DROP VIEW group1;
 
 CREATE VIEW group1 AS
-SELECT actor, count('x') top
+SELECT actor, count(*) top
 FROM join1
 GROUP BY actor;
 --6249
