@@ -19,12 +19,15 @@ SELECT * FROM mostUSA;
 
 
 
+
+
 DROP VIEW mostUSA2;
 
 CREATE VIEW mostUSA2 AS(
-SELECT actor, count('x') FROM
-CASTS NATURAL JOIN MOVIES
-WHERE country='USA'
+SELECT actor, count('x') top FROM(
+CASTS NATURAL JOIN (MOVIES
+WHERE country='USA'))
 GROUP BY actor);
 
 SELECT * FROM mostUSA2;
+
