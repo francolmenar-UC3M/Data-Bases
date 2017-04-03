@@ -1,4 +1,4 @@
-SELECT clientId, name, surname, title, season
+SELECT name, surname, title, season
   FROM ((SELECT title, season FROM SEASONS) NATURAL JOIN 
        (SELECT title, season, client FROM lic_series) JOIN 
        clients ON clientId=client);
