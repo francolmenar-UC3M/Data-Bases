@@ -1,2 +1,2 @@
 SELECT clientId, name, surname
-  FROM title, season
+  FROM (SELECT title, season FROM SEASON) NATURAL JOIN 
