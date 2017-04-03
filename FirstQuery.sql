@@ -13,7 +13,7 @@ enddate DATE,
 type VARCHAR2(1),
 CONSTRAINT PK_current_clients PRIMARY KEY (clientId),
 CONSTRAINT FK_current_clients1 FOREIGN KEY (clientId) REFERENCES clients,
-CONSTRAINT CK_products1 CHECK (type IN ('C','V'))
+CONSTRAINT CK_current_clients6 CHECK (type IN ('C','V'))
 );
 
 
