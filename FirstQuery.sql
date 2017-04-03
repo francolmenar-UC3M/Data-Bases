@@ -2,27 +2,7 @@
 -- -- Creation of the projection of name and surname --
 -- -- from client order by surname,name ---------------
 -- ----------------------------------------------------
-DROP VIEW clientsByName;
-DROP VIEW contractView;
 DROP TABLE current_clients;
-
-CREATE VIEW clientsByName AS
-	SELECT name, surname , clientId
-	FROM clients
-	ORDER BY surname, name;
---5000
-
-
-
-
-CREATE VIEW contractView AS
-	SELECT startdate, enddate, contract_type, clientId
-	FROM contracts
-	WHERE sysdate < enddate;
---2157
-
-
-
 
 CREATE TABLE current_clients(
 clientId	VARCHAR2(15),
@@ -36,6 +16,7 @@ CONSTRAINT FK_current_clients1 FOREIGN KEY (clientId) REFERENCES clients,
 CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES products
 );
 
+
  INSERT INTO current_clients
 	SELECT clientId, name, surname, startdate, enddate, contract_type
 	FROM ((
@@ -45,6 +26,6 @@ CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES products
 		SELECT startdate, enddate, contract_type, clientId
 	FROM contracts
 	WHERE sysdate < enddate));
---2149--
+--2140--
 
 SELECT * FROM current_clients;
