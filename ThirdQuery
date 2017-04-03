@@ -1,6 +1,9 @@
 SELECT name, surname, title, season
-  FROM ((SELECT title, season FROM SEASONS) NATURAL JOIN 
-       (SELECT title, season, client FROM lic_series) JOIN 
+  FROM (((SELECT title, season FROM SEASONS) NATURAL JOIN 
+       (SELECT title, season, client FROM lic_series) 
+       WHERE SERIES.episodes = COUNT(episodes)) JOIN 
        clients ON clientId=client);
+       
+--178857--
   
 
