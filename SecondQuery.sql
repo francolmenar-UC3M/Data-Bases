@@ -5,6 +5,7 @@
 DROP VIEW join1;
 DROP VIEW group1;
 DROP VIEW mostUSA;
+DROP TABLE topActors;
 
 
 CREATE VIEW join1 AS
@@ -36,13 +37,20 @@ where top_movie <= 5;
 
 SELECT * FROM mostUSA;
 
-DROP TABLE topActors
+DROP TABLE topActors;
+
 CREATE TABLE topActors(
   actor_name   VARCHAR2(50),
   ranking NUMBER(1);
-
+  CONSTRAINT PK_topActors PRIMARY KEY (actor_name),
+  CONSTRAINT FK1_topActors FOREIGN KEY (actor) REFERENCES PLAYERS ON DELETE CASCADE,
 )
 
+INSERT INTO topActors
+SELECT actor_name, ranking
+FROM mostUSA;
+
+SELECT * FROM topActors;
 
 
 SELECT * FROM join1;
