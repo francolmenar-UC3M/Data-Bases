@@ -3,18 +3,23 @@
 -- -- movies from USA --------------------------------
 -- ----------------------------------------------------
 DROP VIEW join1;
+DROP VIEW group1;
+DROP VIEW mostUSA;
+
 
 CREATE VIEW join1 AS
-SELECT DISTINCT actor, title FROM
+SELECT DISTINCT actor_name, title FROM
+PLAYERS INNER JOIN(
 CASTS INNER JOIN MOVIES
 ON CASTS.title = MOVIES.movie_title
-WHERE country='USA';
+WHERE country='USA')
+ON PLAYERS.actor_name = CASTS.actor;
 --11103
 
 DROP VIEW group1;
 
 CREATE VIEW group1 AS
-SELECT actor, count(actor) top
+SELECT actor_name, count(actor) top
 FROM join1
 GROUP BY actor;
 --4673
@@ -23,13 +28,21 @@ DROP VIEW mostUSA;
 
 CREATE VIEW mostUSA AS
 SELECT * FROM(
-SELECT actor,  rank() OVER (
+SELECT actor_name,  rank() OVER (
 ORDER BY top desc)
 AS top_movie
 FROM group1)
 where top_movie <= 5;
 
 SELECT * FROM mostUSA;
+
+DROP TABLE topActors
+CREATE TABLE topActors(
+  actor_name   VARCHAR2(50),
+  ranking NUMBER(1);
+
+)
+
 
 
 SELECT * FROM join1;
