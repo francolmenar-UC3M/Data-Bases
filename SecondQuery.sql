@@ -11,17 +11,17 @@ CREATE VIEW join1 AS
 SELECT DISTINCT actor_name, title FROM
 PLAYERS INNER JOIN(
 CASTS INNER JOIN MOVIES
-ON CASTS.title = MOVIES.movie_title
-WHERE country='USA')
-ON PLAYERS.actor_name = CASTS.actor;
+ON CASTS.title = MOVIES.movie_title)
+ON PLAYERS.actor_name = CASTS.actor
+WHERE country='USA';
 --11103
 
 DROP VIEW group1;
 
 CREATE VIEW group1 AS
-SELECT actor_name, count(actor) top
+SELECT actor_name, count(actor_name) top
 FROM join1
-GROUP BY actor;
+GROUP BY actor_name;
 --4673
 
 DROP VIEW mostUSA;
