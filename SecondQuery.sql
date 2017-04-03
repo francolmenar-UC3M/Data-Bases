@@ -17,7 +17,6 @@ ON PLAYERS.actor_name = CASTS.actor
 WHERE country='USA';
 --11103
 
-DROP VIEW group1;
 
 CREATE VIEW group1 AS
 SELECT actor_name, count(actor_name) top
@@ -25,7 +24,6 @@ FROM join1
 GROUP BY actor_name;
 --4673
 
-DROP VIEW mostUSA;
 
 CREATE VIEW mostUSA AS
 SELECT * FROM(
@@ -35,23 +33,23 @@ AS top_movie
 FROM group1)
 where top_movie <= 5;
 
-SELECT * FROM mostUSA;
 
-DROP TABLE topActors;
 
 CREATE TABLE topActors(
   actor_name   VARCHAR2(50),
-  ranking NUMBER(1);
+  ranking NUMBER(1),
   CONSTRAINT PK_topActors PRIMARY KEY (actor_name),
-  CONSTRAINT FK1_topActors FOREIGN KEY (actor) REFERENCES PLAYERS ON DELETE CASCADE,
-)
+  CONSTRAINT FK1_topActors FOREIGN KEY (actor_name) REFERENCES PLAYERS ON DELETE CASCADE
+);
 
 INSERT INTO topActors
-SELECT actor_name, ranking
+SELECT actor_name, top_movie
 FROM mostUSA;
+
 
 SELECT * FROM topActors;
 
 
+SELECT * FROM mostUSA;
 SELECT * FROM join1;
 SELECT * FROM group1;
