@@ -10,7 +10,7 @@ name		VARCHAR2(100) NOT NULL,
 surname		VARCHAR2(100) NOT NULL,
 startdate DATE NOT NULL,
 enddate DATE,
-contract_type VARCHAR2(1),
+type VARCHAR2(1),
 CONSTRAINT PK_current_clients PRIMARY KEY (clientId),
 CONSTRAINT FK_current_clients1 FOREIGN KEY (clientId) REFERENCES clients,
 CONSTRAINT CK_products1 CHECK (type IN ('C','V'))
