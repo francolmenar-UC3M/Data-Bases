@@ -1,8 +1,8 @@
 SELECT name, surname, title, season
-  FROM (((SELECT title, season FROM SEASONS) NATURAL JOIN 
-       (SELECT title, season, client FROM lic_series) 
-       WHERE SERIES.episodes = COUNT(episodes)) JOIN 
-       clients ON clientId=client);
+  FROM ((SELECT title, season FROM SEASONS) NATURAL JOIN 
+       (SELECT title, season, client FROM lic_series) JOIN 
+       clients ON clientId=client)
+       HAVING SEASONS.episodes = COUNT(episodes);
        
 --178857--
   
