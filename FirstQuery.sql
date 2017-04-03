@@ -25,7 +25,7 @@ CONSTRAINT FK_current_clients6 FOREIGN KEY (contract_type) REFERENCES products
 	ORDER BY surname, name) NATURAL JOIN (
 		SELECT startdate, enddate, contract_type, clientId
 	FROM contracts
-	WHERE sysdate < enddate));
+	WHERE ((sysdate < enddate) AND (enddate = NULL)));
 --2140--
 
 SELECT * FROM current_clients;
