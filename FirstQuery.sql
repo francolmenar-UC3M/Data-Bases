@@ -1,5 +1,4 @@
- INSERT INTO current_clients
-	SELECT clientId, name, surname, startdate, enddate, type
+SELECT clientId, name, surname, startdate, enddate, type
 	FROM 
 	(SELECT name, surname , clientId
 	FROM clients
