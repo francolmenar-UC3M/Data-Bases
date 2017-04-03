@@ -1,1 +1,2 @@
-SELECT client
+SELECT clientId, name, surname
+  FROM title, season
