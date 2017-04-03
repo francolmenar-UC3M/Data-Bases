@@ -1,2 +1,4 @@
 SELECT clientId, name, surname
   FROM (SELECT title, season FROM SEASON) NATURAL JOIN 
+       (SELCET title, season, client FROM lis_series)
+FROM CLIENTS
