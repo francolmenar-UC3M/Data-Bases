@@ -1,7 +1,8 @@
 SELECT name, surname, SEASONS.title, SEASONS.season
-  FROM (SEASONS JOIN lic_series ON SEASONS.season=lic_series.season)
+  FROM (SELECT season, title, episode FROM SEASONS 
+        JOIN SELECT season, title, episodes FROM lic_series ON SEASONS.season=lic_series.season AND SEASONS.title=lic_series.title)
        JOIN clients ON clientId=client
-  GROUP BY SEASONS.episode HAVING COUNT(lic_series.episode)=(SELECT max(episode) FROM SEASONS);
+  GROUP BY SEASONS.season HAVING MAX(episode)=episode;
   
 --SELECT COUNT(*) FROM (..);  
 
