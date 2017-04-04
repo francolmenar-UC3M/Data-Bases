@@ -6,5 +6,5 @@ SELECT clientId, name, surname, startdate, enddate, type
 	NATURAL JOIN 
 	(SELECT startdate, enddate, type, clientId
 	FROM contracts JOIN products ON product_name=contract_type)
-	WHERE (sysdate<enddate AND sysdate>startdate) OR (sysdate >= startdate AND enddate IS NULL));
+	WHERE ((sysdate<enddate AND sysdate>startdate) OR (sysdate >= startdate AND enddate IS NULL));
 --2258--
