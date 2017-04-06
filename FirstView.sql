@@ -1,6 +1,7 @@
 DROP VIEW PredictTVseriesContract;
 DROP VIEW PredictTVseriesTaps;
 DROP VIEW PredictTVseriesTapsMax;
+DROP VIEW MaxTitle;
 
 
 
@@ -17,13 +18,34 @@ WHERE clientID='15/73766815/37T';
 
 
 CREATE VIEW PredictTVseriesTapsMax AS	
-SELECT title, max(view_datetime) AS mostRecent	
+SELECT title AS title1, max(view_datetime) AS mostRecent	
 FROM  PredictTVseriesTaps 	
 GROUP BY title;
 
 
-	
-SELECT * FROM PredictTVseriesContract;
-	
+CREATE VIEW MaxTitle AS
+SELECT clientId, title, episode, season, mostRecent	
+FROM PredictTVseriesTapsMax 
+JOIN PredictTVseriesTaps
+ON (title=title1 
+AND mostRecent= view_datetime);
+
+
+
+
+SELECT * FROM MaxTitle;	
+SELECT * FROM PredictTVseriesContract;	
 SELECT * FROM PredictTVseriesTaps;
-SELECT * FROM PredictTVseriesTapsMax;	
+SELECT * FROM PredictTVseriesTapsMax;
+
+
+
+Modern Family
+         3          6 27-DEC-16
+
+Breaking Bad
+        13          3 09-JUL-16
+
+15/73766815/37T
+Cheers
+        25          3 14-OCT-16
