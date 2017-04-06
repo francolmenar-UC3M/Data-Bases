@@ -3,7 +3,7 @@ DROP VIEW PredictTVseriesTaps;
 DROP VIEW PredictTVseriesTapsMax;
 DROP VIEW MaxTitle;
 DROP VIEW SerieInfo;
-
+DROP VIEW NextSerie;
 
 
 CREATE VIEW PredictTVseriesContract AS	
@@ -33,23 +33,31 @@ AND mostRecent= view_datetime);
 
 
 CREATE VIEW NextSerie AS
-SELECT clientId, title, episode, season
+SELECT clientId, titleInfo, episodeInfo, season
 FROM MaxTitle
-JOIN en breves 
+JOIN (
+SELECT title as titleInfo, episodes as episodeInfo
+FROM SEASONS)
+ON (title=titleInfo AND episode=episodeInfo-1);
+
+
+
 
 
 
 
 
 CREATE VIEW SerieInfo AS
-SELECT title, season, total_seasons, lastEpisode
+SELECT title as title, season, total_seasons, episodes
 FROM SERIES NATURAL JOIN 
-(SELECT title, season, max(episodes) as lastEpisode
+(SELECT title, season, episodes 
 FROM SEASONS
 GROUP BY title,season)
 ORDER BY title, season;
 
 
+
+SELECT * FROM NextSerie;
 SELECT * FROM SerieInfo;
 SELECT * FROM MaxTitle;	
 SELECT * FROM PredictTVseriesContract;	
