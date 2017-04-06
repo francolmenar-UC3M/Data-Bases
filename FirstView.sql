@@ -6,6 +6,7 @@ DROP VIEW SerieInfo;
 DROP VIEW NextSerie;
 
 
+
 CREATE VIEW PredictTVseriesContract AS	
 SELECT clientId, contractID 	
 FROM  CLIENTS NATURAL JOIN  contracts;	
@@ -33,16 +34,10 @@ AND mostRecent= view_datetime);
 
 
 CREATE VIEW NextSerie AS
-SELECT clientId, titleInfo, episodeInfo, season
-FROM MaxTitle
-JOIN (
-SELECT title as titleInfo, episodes as episodeInfo
-FROM SEASONS)
-ON (title=titleInfo AND episode=episodeInfo-1);
-
-
-
-
+SELECT clientId, title, episode, season
+from(
+UPDATE MaxTitle
+set episode = episode+1);
 
 
 
@@ -71,6 +66,7 @@ Modern Family
 
 Breaking Bad
         13          3 09-JUL-16
+
 
 15/73766815/37T
 Cheers
