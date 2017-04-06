@@ -34,6 +34,13 @@ AND mostRecent= view_datetime);
 
 
 
+SELECT title, episode, season
+FROM lic_series
+where clietID = '15/73766815/37T'
+ORDER BY title, seaon, episode;
+
+
+
 CREATE VIEW NextSerie AS
 SELECT clientId, title, episode, season
 from MaxTitle
