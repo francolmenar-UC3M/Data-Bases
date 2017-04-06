@@ -1,8 +1,8 @@
 CREATE VIEW All_movies AS 
-   SELECT (((((CASTS NATURAL JOIN CASTS) PLAYERS ON actor=actor_name) 
+   SELECT movie_title FROM (((((CASTS NATURAL JOIN CASTS) JOIN PLAYERS ON actor=actor_name) 
              JOIN MOVIES ON title=movie_title) NATURAL JOIN GENRES_MOVIES)
              NATURAL JOIN KEYWORDS_MOVIES)
-   ORDER BY movie_title ASC
+   ORDER BY movie_title ASC;
    
    
  
