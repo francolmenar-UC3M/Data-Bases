@@ -1,0 +1,4 @@
+CREATE VIEW All_movies AS 
+   SELECT ((((MOVIES JOIN keywords_movies ON title=movie_title) JOIN GENRES_MOVIES ON title=movie_title) 
+             JOIN PLAYERS ON facebook_likes=cast_total_facebook_likes) JOIN CASTS ON actor=actor_name AND title=movie_title)
+   ORDER BY movie_title ASC;
