@@ -6,4 +6,4 @@ CREATE VIEW Bacalá AS
     WHERE pct BETWEEN 50 AND 97
     GROUP BY title)
    WHERE ROWNUM <= 5
-   ORDER BY antu;
+   ORDER BY antu
