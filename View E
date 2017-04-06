@@ -4,7 +4,7 @@ CREATE VIEW Bacalá AS
   FROM 
   (SELECT title, COUNT(*) AS antu
     FROM taps_movies 
-    WHERE pct BETWEEN 50 AND 97
+    WHERE pct > 50 and pct < 97
     GROUP BY title)
    ORDER BY antu DESC)
    WHERE ROWNUM <= 5;
