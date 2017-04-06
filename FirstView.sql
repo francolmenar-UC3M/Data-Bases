@@ -33,11 +33,12 @@ ON (title=title1
 AND mostRecent= view_datetime);
 
 
+
 CREATE VIEW NextSerie AS
 SELECT clientId, title, episode, season
-from(
-UPDATE MaxTitle
-set episode = episode+1);
+from MaxTitle
+FOR UPDATE MaxTitle
+OF episode = episode+1;
 
 
 
