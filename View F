@@ -1,0 +1,3 @@
+CREATE VIEW Pigeonholed AS
+SELECT actor (SELECT COUNT(title) AS num, actor 
+              FROM (SELECT title FROM CASTS NATURAL JOIN GENRES_MOVIES)
