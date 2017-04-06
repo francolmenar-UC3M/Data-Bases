@@ -1,2 +1,0 @@
-CREATE VIEW All_movies AS       
-SELECT movie_title, title_year, 
