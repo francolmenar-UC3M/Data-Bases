@@ -4,5 +4,5 @@ CREATE OR REPLACE VIEW All_movies AS
              NATURAL JOIN KEYWORDS_MOVIES)
    ORDER BY movie_title ASC;
    
-   --
+   --4755
  
