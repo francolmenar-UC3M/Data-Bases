@@ -1,0 +1,71 @@
+DROP VIEW PredictTVseriesContract;
+DROP VIEW PredictTVseriesTaps;
+DROP VIEW PredictTVseriesTapsMax;
+DROP VIEW MaxTitle;
+DROP VIEW SerieInfo;
+DROP VIEW NextSerie;
+
+
+
+CREATE OR REPLACE VIEW PredictTVseriesContract AS
+SELECT clientId, contractID
+FROM  CLIENTS NATURAL JOIN  contracts;
+
+
+CREATE OR REPLACE VIEW PredictTVseriesTaps AS
+SELECT clientId, title, episode, season, view_datetime
+FROM  PredictTVseriesContract
+NATURAL JOIN  taps_series;
+--client with his views
+
+
+CREATE OR REPLACE VIEW PredictTVseriesTapsMax AS
+SELECT clientId AS clientId1, title AS title1, max(view_datetime) AS mostRecent
+FROM  PredictTVseriesTaps
+GROUP BY clientId,title;
+--Last views of each client
+
+
+CREATE OR REPLACE VIEW MaxTitle AS
+SELECT clientId, title, episode, season, mostRecent
+FROM PredictTVseriesTapsMax
+JOIN PredictTVseriesTaps
+ON (title=title1
+AND mostRecent= view_datetime
+AND clientId = clientId1);
+--Each client with the last views of each serie
+
+
+CREATE OR REPLACE VIEW SerieInfo AS
+SELECT title, season, episodes
+FROM SEASONS
+ORDER BY title, season;
+--The series with its max num of episodes per season
+
+
+
+CREATE OR REPLACE VIEW premium AS
+SELECT clientId, title, episode, season, mostRecent
+from MaxTitle
+ANTI JOIN SerieInfo
+ON MaxTitle.episode = SerieInfo.episodes
+ORDER BY mostRecent desc;
+
+CREATE OR REPLACE VIEW predictSerie AS
+SELECT clientId, title, (episode+1) AS nextEpisode, season
+from (SELECT * FROM(
+SELECT clientId, title, episode, season, RANK() OVER (PARTITION BY clientId ORDER BY mostRecent desc) as ultimo
+FROM premium)
+WHERE ultimo = 1);
+
+
+
+SELECT * FROM predictSerie;
+SELECT * FROM NextSerie2;
+SELECT * FROM NextSerie1;
+SELECT * FROM NextSerie;
+SELECT * FROM SerieInfo;
+SELECT * FROM MaxTitle;
+SELECT * FROM PredictTVseriesContract;
+SELECT * FROM PredictTVseriesTaps;
+SELECT * FROM PredictTVseriesTapsMax;
