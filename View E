@@ -1,4 +1,4 @@
-CREATE VIEW Bacalá AS 
+CREATE OR REPLACE VIEW Bacala AS 
   SELECT title FROM
   (SELECT title, antu
   FROM 
