@@ -1,10 +1,8 @@
-DROP VIEW TopContent;
 
-CREATE VIEW TopContent AS
+CREATE OR REPLACE VIEW TopContent AS
 SELECT title, to_char(view_datetime, 'MON-YYYY') AS month, count(view_datetime) total
 FROM taps_movies
 GROUP BY to_char(view_datetime, 'MON-YYYY'), title;
 
 
 
-SELECT * FROM TopContent;
