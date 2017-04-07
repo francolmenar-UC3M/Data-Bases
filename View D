@@ -1,8 +1,25 @@
-
 CREATE OR REPLACE VIEW TopContent AS
-SELECT title, to_char(view_datetime, 'MON-YYYY') AS month, count(view_datetime) total
-FROM taps_movies
-GROUP BY to_char(view_datetime, 'MON-YYYY'), title;
+SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month, view_datetime
+FROM taps_movies;
+--taps with its views
+
+CREATE OR REPLACE VIEW contentContract AS
+SELECT title, month, view_datetime, contract_type
+from TopContent
+NATURAL JOIN contracts;
 
 
+CREATE OR REPLACE VIEW contentProduct AS
+SELECT title, month, view_datetime, tap_cost
+from contentContract
+JOIN products
+ON contract_type = product_name;
+	
 
+
+COMO EN LA 4 QUERY
+
+SELECT * FROM TopContent;
+SELECT * FROM contentContract;
+SELECT * FROM contentProduct;
+SELECT * FROM amount;
