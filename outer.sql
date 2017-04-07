@@ -1,3 +1,4 @@
+
 DROP VIEW PredictTVseriesContract;
 DROP VIEW PredictTVseriesTaps;
 DROP VIEW PredictTVseriesTapsMax;
@@ -43,40 +44,26 @@ ORDER BY title, season;
 --The series with its max num of episodes per season
 
 
-
-
-
-
 CREATE OR REPLACE VIEW premium AS
-
 SELECT clientId, title1, episode, season1, mostRecent
-
 from MaxTitle
-
 ANTI JOIN SerieInfo
-
 ON episode = episodes
-
 where title1 = title
+AND season1 = season
 ORDER BY mostRecent desc;
-
---9519 MAL
-
-
 
 
 
 CREATE OR REPLACE VIEW predictSerie AS
-
 SELECT clientId, title1, (episode+1) AS nextEpisode, season1
-
 from (SELECT * FROM(
 SELECT clientId, title1, episode, season1, RANK() OVER 
 (PARTITION BY clientId ORDER BY mostRecent desc) as ultimo
-
 FROM premium)
-
 WHERE ultimo = 1);
+
+--3410
 
 
 SELECT * FROM predictSerie;
