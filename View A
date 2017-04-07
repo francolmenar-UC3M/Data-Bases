@@ -71,7 +71,7 @@ from (SELECT * FROM(
 SELECT clientId, title, episode, season, validation, RANK() OVER (ORDER BY mostRecent desc) as ultimo
 FROM NextSerie2)
 WHERE ultimo = 1
-GROUP BY clientId, title, episode, season, validation
+GROUP BY clientId, title, (episode+1), season, validation
 );
 
 
