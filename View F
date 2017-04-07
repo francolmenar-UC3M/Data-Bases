@@ -1,0 +1,12 @@
+CREATE OR REPLACE VIEW Pigeonholed AS
+SELECT genrenum, actor, mov FROM 
+    (SELECT COUNT(*) AS genrenum, actor
+              FROM (SELECT DISTINCT genre, actor FROM CASTS NATURAL JOIN GENRES_MOVIES)
+     GROUP BY actor)
+NATURAL JOIN
+        (SELECT DISTINCT COUNT(*) AS mov, actor FROM CASTS GROUP BY actor) 
+GROUP BY mov HAVING mov/2 > 3
+              
+         
+              
+                        
