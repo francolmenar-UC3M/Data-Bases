@@ -26,7 +26,7 @@ GROUP BY title;
 
 
 CREATE VIEW MaxTitle AS
-SELECT clientId, title, episode+1, season, mostRecent	
+SELECT clientId, title, (episode+1) AS newEpisode, season, mostRecent	
 FROM PredictTVseriesTapsMax 
 JOIN PredictTVseriesTaps
 ON (title=title1 
