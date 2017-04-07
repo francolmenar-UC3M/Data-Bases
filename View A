@@ -7,59 +7,77 @@ DROP VIEW NextSerie;
 
 
 
-CREATE VIEW PredictTVseriesContract AS	
+CREATE OR REPLACE VIEW PredictTVseriesContract AS	
 SELECT clientId, contractID 	
 FROM  CLIENTS NATURAL JOIN  contracts;	
 
 
-CREATE VIEW PredictTVseriesTaps AS
+CREATE OR REPLACE VIEW PredictTVseriesTaps AS
 SELECT clientId, title, episode, season, view_datetime	
 FROM  PredictTVseriesContract 
-NATURAL JOIN  taps_series	
-WHERE clientID='15/73766815/37T';
+NATURAL JOIN  taps_series;
+--client with his views
 
 
-CREATE VIEW PredictTVseriesTapsMax AS	
-SELECT title AS title1, max(view_datetime) AS mostRecent	
-FROM  PredictTVseriesTaps 	
-GROUP BY title;
+CREATE OR REPLACE VIEW PredictTVseriesTapsMax AS	
+SELECT clientId AS clientId1, title AS title1, max(view_datetime) AS mostRecent	
+FROM  PredictTVseriesTaps
+GROUP BY clientId,title;
+--Last views of each client
 
 
-CREATE VIEW MaxTitle AS
-SELECT clientId, title, episode AS newEpisode, season, mostRecent	
+CREATE OR REPLACE VIEW MaxTitle AS
+SELECT clientId, title, episode, season, mostRecent	
 FROM PredictTVseriesTapsMax 
 JOIN PredictTVseriesTaps
 ON (title=title1 
-AND mostRecent= view_datetime);
+AND mostRecent= view_datetime
+AND clientId = clientId1);
+--Each client with the last views of each serie
 
 
-
-SELECT title, episode, season
-FROM lic_series
-where clietID = '15/73766815/37T'
-ORDER BY title, seaon, episode;
-
-
-
-CREATE VIEW NextSerie AS
-SELECT clientId, title, (episode+1), season
-from MaxTitle
-FOR UPDATE MaxTitle
-OF episode = episode+1;
-
-
-
-
-CREATE VIEW SerieInfo AS
-SELECT title as title, season, total_seasons, episodes
-FROM SERIES NATURAL JOIN 
-(SELECT title, season, episodes 
+CREATE OR REPLACE VIEW SerieInfo AS
+SELECT title, season, episodes 
 FROM SEASONS
-GROUP BY title,season)
 ORDER BY title, season;
+--The series with its max num of episodes per season
 
 
+CREATE OR REPLACE VIEW NextSerie AS
+SELECT clientId, title, episode, episodes, season, mostRecent	
+from MaxTitle
+NATURAL JOIN SerieInfo
+ORDER BY mostRecent desc;
+--I join the maximun number of episodes and the each client with the last views of each serie
 
+
+CREATE OR REPLACE VIEW NextSerie1 AS
+SELECT clientId, title, episode, episodes, season, mostRecent,
+CASE WHEN episode = episodes THEN 'invalid' 
+ELSE 'valid'
+END AS Validation
+FROM NextSerie;
+--I classify the views of the last episode of a serie or not
+
+CREATE OR REPLACE VIEW NextSerie2 AS
+SELECT clientId, title, episode, season, validation, mostRecent
+from NextSerie1
+WHERE Validation = 'valid';
+--I select just the valid taps
+
+CREATE OR REPLACE VIEW predictSerie AS
+SELECT clientId, title, (episode+1) AS nextEpisode, season
+from (SELECT * FROM(
+SELECT clientId, title, episode, season, validation, RANK() OVER (ORDER BY mostRecent desc) as ultimo
+FROM NextSerie2)
+WHERE ultimo = 1
+GROUP BY clientId, title, episode, season, validation
+);
+
+
+SELECT * FROM predictSerie;
+SELECT * FROM NextSerie2;
+SELECT * FROM NextSerie1;
 SELECT * FROM NextSerie;
 SELECT * FROM SerieInfo;
 SELECT * FROM MaxTitle;	
@@ -67,6 +85,19 @@ SELECT * FROM PredictTVseriesContract;
 SELECT * FROM PredictTVseriesTaps;
 SELECT * FROM PredictTVseriesTapsMax;
 
+
+
+
+
+SELECT * FROM(
+SELECT clientId, title, episode, season, validation, RANK() OVER (ORDER BY mostRecent desc) as ultimo
+FROM NextSerie2)
+WHERE ultimo = 1;
+
+CREATE VIEW PredictTVseriesTapsMax AS	
+SELECT title AS title1, max(view_datetime) AS mostRecent	
+FROM  PredictTVseriesTaps 	
+GROUP BY title;
 
 
 Modern Family
