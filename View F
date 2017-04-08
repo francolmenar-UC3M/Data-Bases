@@ -5,5 +5,8 @@ SELECT genrenum, actor, mov FROM
      GROUP BY actor)
 NATURAL JOIN
         (SELECT DISTINCT (COUNT(*)/2) AS mov, actor FROM CASTS GROUP BY actor) 
-GROUP BY mov, genrenum, actor HAVING mov > 3
+GROUP BY mov, genrenum, actor HAVING mov >= 3
 ORDER BY genrenum DESC;
+
+
+--531
