@@ -1,0 +1,30 @@
+CREATE OR REPLACE PROCEDURE bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
+
+CURSOR bill_movie IS
+		SELECT clientId,contractId, product_name,(tap_cost*2) as tap_costMovies,month FROM(
+		SELECT clientId, contractId, contract_type, month FROM(
+		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+		FROM taps_movies)
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
+
+CURSOR bill_serie IS
+		SELECT clientId,contractId, product_name,tap_cost as tap_costSeries,month FROM(
+		SELECT clientId, contractId, contract_type, month FROM(
+		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+		FROM taps_series)
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
+
+DECLARE
+
+		costsMovies NUMBER;
+		costsSeries NUMBER;
+		i NUMBER;
+
+		SET SERVEROUTPUT ON;
+
+SELECT COUNT(*) INTO i FROM bill_movie;
+
+WHILE(i > 0)
+			BEGIN 
+	
+END;
