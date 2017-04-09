@@ -26,7 +26,8 @@ from contentContractMovies
 JOIN products
 ON contract_type = product_name
 GROUP BY title, month, (tap_cost*2)))
-WHERE top = pay1;
+WHERE top = pay1
+ORDER BY month;
 
 SELECT * FROM contentProductMovies;
 
