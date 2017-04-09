@@ -9,28 +9,31 @@ from TopContentMovies
 NATURAL JOIN contracts;
 
 
-
 CREATE OR REPLACE VIEW contentProductMovies AS
 SELECT title, month, top FROM
 (SELECT  month, max(pay) as top FROM
 (SELECT title, month, (tap_costMovies * times) as pay FROM
 (SELECT title, month, (tap_cost*2) as tap_costMovies, COUNT(month) as times
-from contentContractMovies
+from (SELECT title, month, contract_type
+from (SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+FROM taps_movies)
+NATURAL JOIN contracts)
 JOIN products
 ON contract_type = product_name
 GROUP BY title, month, (tap_cost*2)))
 GROUP BY month)
 NATURAL JOIN (SELECT title, month, (tap_costMovies * times) as pay1 FROM
 (SELECT title, month, (tap_cost*2) as tap_costMovies, COUNT(month) as times
-from contentContractMovies
+from (SELECT title, month, contract_type
+from (SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+FROM taps_movies)
+NATURAL JOIN contracts)
 JOIN products
 ON contract_type = product_name
 GROUP BY title, month, (tap_cost*2)))
-WHERE top = pay1
-ORDER BY month;
+WHERE top = pay1;
 
 SELECT * FROM contentProductMovies;
-
 
 CREATE OR REPLACE VIEW TopContentSerie AS
 SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
