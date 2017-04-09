@@ -1,3 +1,4 @@
+
 DROP VIEW PredictTVseriesContract;
 DROP VIEW PredictTVseriesTaps;
 DROP VIEW PredictTVseriesTapsMax;
@@ -27,7 +28,7 @@ GROUP BY clientId,title;
 
 
 CREATE OR REPLACE VIEW MaxTitle AS
-SELECT clientId, title, episode, season, mostRecent	
+SELECT clientId, title as title1, episode, season as season1, mostRecent	
 FROM PredictTVseriesTapsMax 
 JOIN PredictTVseriesTaps
 ON (title=title1 
@@ -43,35 +44,27 @@ ORDER BY title, season;
 --The series with its max num of episodes per season
 
 
-CREATE OR REPLACE VIEW NextSerie AS
-SELECT clientId, title, episode, episodes, season, mostRecent	
+CREATE OR REPLACE VIEW premium AS
+SELECT clientId, title1, episode, season1, mostRecent
 from MaxTitle
-NATURAL JOIN SerieInfo
+ANTI JOIN SerieInfo
+ON episode = episodes
+where title1 = title
+AND season1 = season
 ORDER BY mostRecent desc;
---I join the maximun number of episodes and the each client with the last views of each serie
 
 
-CREATE OR REPLACE VIEW NextSerie1 AS
-SELECT clientId, title, episode, episodes, season, mostRecent,
-CASE WHEN episode = episodes THEN 'invalid' 
-ELSE 'valid'
-END AS Validation
-FROM NextSerie;
---I classify the views of the last episode of a serie or not
-
-CREATE OR REPLACE VIEW NextSerie2 AS
-SELECT clientId, title, episode, season, validation, mostRecent
-from NextSerie1
-WHERE Validation = 'valid';
---I select just the valid taps
 
 CREATE OR REPLACE VIEW predictSerie AS
-SELECT clientId, title, (episode+1) AS nextEpisode, season
+SELECT clientId, title1, (episode+1) AS nextEpisode, season1
 from (SELECT * FROM(
-SELECT clientId, title, episode, season, validation, RANK() OVER (PARTITION BY clientId ORDER BY mostRecent desc) as ultimo
-FROM NextSerie2)
+SELECT clientId, title1, episode, season1, RANK() OVER 
+(PARTITION BY clientId ORDER BY mostRecent desc) as ultimo
+FROM premium)
 WHERE ultimo = 1);
 --4008
+
+--3410
 
 
 SELECT * FROM predictSerie;
