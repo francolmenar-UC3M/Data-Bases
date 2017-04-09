@@ -1,14 +1,3 @@
-CREATE OR REPLACE VIEW TopContentMovies AS
-(SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
-FROM taps_movies);
---taps with its views
-
-CREATE OR REPLACE VIEW contentContractMovies AS
-(SELECT title, month, contract_type
-from TopContentMovies
-NATURAL JOIN contracts);
-
-
 CREATE OR REPLACE VIEW contentProductMovies AS
 SELECT title, month, top FROM
  (SELECT  month, max(pay) as top FROM
@@ -32,29 +21,31 @@ NATURAL JOIN (SELECT title, month, (tap_costMovies * times) as pay1 FROM
  GROUP BY title, month, (tap_cost*2)))
 WHERE top = pay1;
 
-SELECT * FROM contentProductMovies;
 
-
-CREATE OR REPLACE VIEW TopContentSerie AS
-SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
-FROM taps_series;
---taps with its views
-
-CREATE OR REPLACE VIEW contentContractSerie AS
-SELECT title, month, contract_type
-from TopContentSerie
-NATURAL JOIN contracts;
 
 CREATE OR REPLACE VIEW contentProductSerie AS
-SELECT title, month, tap_cost
-from contentContractSerie
-JOIN products
-ON contract_type = product_name;
+SELECT title, month, top FROM
+ (SELECT  month, max(pay) as top FROM
+  (SELECT title, month, (tap_cost * times) as pay FROM
+   (SELECT title, month, tap_cost, COUNT(month) as times from
+    (SELECT title, month, contract_type from
+      (SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month FROM
+      taps_series)
+      NATURAL JOIN contracts)
+    JOIN products
+    ON contract_type = product_name
+  GROUP BY title, month, tap_cost))
+ GROUP BY month)
+NATURAL JOIN (SELECT title, month, (tap_cost * times) as pay1 FROM
+ (SELECT title, month, tap_cost, COUNT(month) as times from
+  (SELECT title, month, contract_type from
+   (SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month FROM taps_series)
+  NATURAL JOIN contracts)
+  JOIN products
+  ON contract_type = product_name
+ GROUP BY title, month, tap_cost))
+WHERE top = pay1;
 
 
-COMO EN LA 4 QUERY
-
-SELECT * FROM TopContentMovies;
-SELECT * FROM contentContractMovies;
-SELECT * FROM contentProduct;
-SELECT * FROM amount;
+SELECT * FROM contentProductMovies;
+SELECT * FROM contentProductSerie;
