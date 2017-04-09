@@ -10,11 +10,12 @@ NATURAL JOIN contracts;
 
 
 CREATE OR REPLACE VIEW contentProductMovies AS
-SELECT title, month, (tap_cost*2) as tap_costMovies, COUNT(month) as times
+SELECT title, month, (tap_costMovies * times) as pay
+(SELECT title, month, (tap_cost*2) as tap_costMovies, COUNT(month) as times
 from contentContractMovies
 JOIN products
 ON contract_type = product_name
-GROUP BY title, month, (tap_cost*2);
+GROUP BY title, month, (tap_cost*2));
 
 CREATE OR REPLACE VIEW TopContentSerie AS
 SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
