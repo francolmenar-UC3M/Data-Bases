@@ -10,7 +10,7 @@ NATURAL JOIN contracts;
 
 
 CREATE OR REPLACE VIEW contentProductMovies AS
-SELECT title, month, (tap_costMovies * times) as pay
+SELECT title, month, (tap_costMovies * times) as pay FROM
 (SELECT title, month, (tap_cost*2) as tap_costMovies, COUNT(month) as times
 from contentContractMovies
 JOIN products
