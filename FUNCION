@@ -1,4 +1,10 @@
-CREATE OR REPLACE PROCEDURE bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
+CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
+
+IS
+
+		costsMovies NUMBER;
+		costsSeries NUMBER;
+		i NUMBER;
 
 CURSOR bill_movie IS
 		SELECT clientId,contractId, product_name,(tap_cost*2) as tap_costMovies,month FROM(
@@ -14,17 +20,19 @@ CURSOR bill_serie IS
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
 
-DECLARE
-
-		costsMovies NUMBER;
-		costsSeries NUMBER;
-		i NUMBER;
-
-		SET SERVEROUTPUT ON;
-
-SELECT COUNT(*) INTO i FROM bill_movie;
-
-WHILE(i > 0)
-			BEGIN 
-	
+BEGIN 
+		FOR contractId IN bill_movie
+		LOOP
+			DBMS_OUTPUT.PUT_LINE('fran subnormal');
+		END LOOP;
+		RETURN 10;
 END;
+/
+
+declare
+result number;
+begin
+result:=bill('hola','pole','uouo');
+end;
+
+
