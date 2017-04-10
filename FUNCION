@@ -1,36 +1,86 @@
 CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
 
 IS
-
+		total_cost NUMBER;
+		zapping NUMBER;
 		costsMovies NUMBER;
 		costsSeries NUMBER;
 		i NUMBER;
 
-CURSOR bill_movie IS
-		SELECT clientId,contractId, product_name,(tap_cost*2) as tap_costMovies,month FROM(
-		SELECT clientId, contractId, contract_type, month FROM(
-		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
+		SELECT clientId,contractId, title, product_name,tap_costMovies,month, type, zapp, ppm, ppd, promo, pct, to_char(datetime, 'MON-YYYY') AS lul
+		FROM(
+		SELECT clientId,contractId, product_name,tap_cost as tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
+		SELECT clientId, contractId, contract_type, month, pct FROM(
+		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, pct
 		FROM taps_movies)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= 'Short Timer' AND month = 'DEC-2016' AND clientId = '58/10070434/04T'))
+		JOIN lic_movies ON client=clientId WHERE lul = monthInput;
 
-CURSOR bill_serie IS
-		SELECT clientId,contractId, product_name,tap_cost as tap_costSeries,month FROM(
+CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
+		SELECT clientId,contractId, product_name,tap_cost as tap_costSeries,month,type, zapp, ppm, ppd, promo FROM(
 		SELECT clientId, contractId, contract_type, month FROM(
 		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
 		FROM taps_series)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
+		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput;
 
 BEGIN 
-		FOR (clientInput AND monthInput AND productInput) IN bill_movie
+		i := 1; --para timmy
+		IF bill_movie %ISOPEN THEN
+				CLOSE bill_movie;
+			END IF;		
+		CASE productInput 
+				WHEN 'Free Rider' THEN  total_cost := 10;
+				WHEN 'Premium Rider' THEN total_cost := 39;
+				WHEN 'TVrider' THEN total_cost := 29;
+				WHEN 'Flat Rate Lover' THEN total_cost := 39;
+				WHEN 'Short Timer' THEN total_cost := 15;
+				WHEN 'Content Master' THEN total_cost := 20;
+				WHEN 'Boredom Fighter' THEN total_cost := 10;
+				WHEN 'Low Cost Rate' THEN total_cost := 0;
+		END CASE;
+		
+		costsMovies := 0;
+		FOR clientId IN bill_movie(clientInput, monthInput, productInput)
 		LOOP
-			costsMovies = tap_costMovies + costsMovies;
+			zapping := 1;
+			IF clientId.zapp > clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
+					IF clientId.type = 'V' THEN
+							clientId.tap_costMovies := clientId.tap_costMovies*i;
+					END IF;
+					IF clientId.type = 'C' THEN
+							clientId.tap_costMovies := clientId.tap_costMovies*i;
+					END IF;
+			costsMovies := clientId.tap_costMovies + costsMovies;
+			DBMS_OUTPUT.PUT_LINE(costsMovies);
 		END LOOP;
-		RETURN costsMovies;
+		costsMovies := costsMovies * 2;
+		
+		
+		
+		
+		
+	
+		costsSeries := 0;	
+		IF bill_serie %ISOPEN THEN
+				CLOSE bill_serie;
+			END IF;
+		FOR clientId IN bill_serie(clientInput, monthInput, productInput)
+		LOOP
+			costsSeries := clientId.tap_costSeries + costsSeries;
+		END LOOP;
+		total_cost := costsSeries + costsMovies + total_cost;
+		DBMS_OUTPUT.PUT_LINE(total_cost || '$');
+		RETURN total_cost;
 END;
-/
+/	
+
 
 declare
 result number;
 begin
-result:=bill('hola','pole','uouo');
+result:=bill('58/10070434/04T','DEC-2016','Short Timer');
 end;
+/
+
