@@ -21,11 +21,11 @@ CURSOR bill_serie IS
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type;
 
 BEGIN 
-		FOR contractId IN bill_movie
+		FOR (clientInput AND monthInput AND productInput) IN bill_movie
 		LOOP
-			DBMS_OUTPUT.PUT_LINE('fran subnormal');
+			costsMovies = tap_costMovies + costsMovies;
 		END LOOP;
-		RETURN 10;
+		RETURN costsMovies;
 END;
 /
 
@@ -34,5 +34,3 @@ result number;
 begin
 result:=bill('hola','pole','uouo');
 end;
-
-
