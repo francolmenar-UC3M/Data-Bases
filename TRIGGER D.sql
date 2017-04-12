@@ -1,16 +1,4 @@
-CREATE OR REPLACE TRIGGER triggerD 
-BEFORE INSERT ON contracts FOR EACH ROW 		
-BEGIN
-		IF (enddate > :new.startdate) AND (startdate <= sysdate) THEN
-					UPDATE contracts
-					SET enddate := :new.startdate-1
-		ELSE
-				DBMS_OUTPUT.PUT_LINE('Normal');
-		END IF;
-END triggerD;
-
-
-mini triger ara sabe como va la vainaDELETE FROM CONTRACTS WHERE clientId='Timmi';
+DELETE FROM CONTRACTS WHERE clientId='Timmi';
 DELETE FROM Clients WHERE clientId='Timmi';
 DELETE FROM CONTRACTS WHERE contractId='Timmi1';
 DROP trigger triggerD;
@@ -18,7 +6,6 @@ DROP trigger triggerD;
 INSERT INTO CLIENTS VALUES('Timmi','Timmi','Timmi','Timmi','Timmi','tuputamadre@hotmail.com',1,TO_DATE('10-OCT-13', 'YYYY-MM-DD'));
 
 insert into contracts VALUES('Timmi','Timmi',TO_DATE('10-OCT-13', 'YYYY-MM-DD'),TO_DATE('10-OCT-19', 'YYYY-MM-DD'),'Short Timer','payo','tonto','matame','ya');
-
 
 
 
@@ -62,10 +49,12 @@ BEGIN
 	where contracts.clientId = :new.clientId;
 
 		IF t_enddate > :new.startdate AND t_startdate <= sysdate THEN
-				DBMS_OUTPUT.PUT_LINE('HAY QUE CURRAR');			
+				DBMS_OUTPUT.PUT_LINE('HAY QUE CURRAR');	
+					t_enddate := :new.startdate-1;	
 		END IF;	
 	ELSE
 		DBMS_OUTPUT.PUT_LINE('MIRAR CASOS');	
+		
 
 	END IF;
 END triggerD;
