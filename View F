@@ -1,12 +1,16 @@
-CREATE OR REPLACE VIEW Pigeonholed AS
-SELECT genrenum, actor, mov FROM 
-    (SELECT COUNT(*) AS genrenum, actor
-              FROM (SELECT DISTINCT genre, actor FROM CASTS NATURAL JOIN GENRES_MOVIES)
-     GROUP BY actor)
-NATURAL JOIN
-        (SELECT DISTINCT (COUNT(*)/2) AS mov, actor FROM CASTS GROUP BY actor) 
-GROUP BY mov, genrenum, actor HAVING mov >= 3
-ORDER BY genrenum DESC;
+CREATE OR REPLACE VIEW pigeonholed AS
+SELECT X.actor, genre, X.topactor
+FROM
+		(SELECT MAX(groupactorgenreX) as topactor, actor
+		FROM (SELECT COUNT(title) AS groupactorgenreX, genre, actor
+          FROM CASTS NATURAL JOIN GENRES_MOVIES
+   				GROUP BY actor, genre HAVING COUNT(title) >= 3) 
+   	GROUP BY actor) X
+JOIN (SELECT COUNT(title) AS groupactorgenreY, genre, actor
+          FROM CASTS NATURAL JOIN GENRES_MOVIES
+   				GROUP BY actor, genre HAVING COUNT(title) >= 3) Y	
+ON X.topactor=Y.groupactorgenreY AND X.actor=Y.actor
+WHERE topactor>=(SELECT COUNT(title)/2 FROM CASTS GROUP BY actor HAVING actor=X.actor);
 
 
---531
+   	
