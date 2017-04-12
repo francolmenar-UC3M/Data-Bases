@@ -20,47 +20,59 @@ INSERT INTO CLIENTS VALUES('Timmi','Timmi','Timmi','Timmi','Timmi','tuputamadre@
 insert into contracts VALUES('Timmi','Timmi',TO_DATE('10-OCT-13', 'YYYY-MM-DD'),TO_DATE('10-OCT-19', 'YYYY-MM-DD'),'Short Timer','payo','tonto','matame','ya');
 
 
+
+
 CREATE OR REPLACE TRIGGER triggerD BEFORE INSERT ON contracts FOR EACH ROW 		
 DECLARE
 	t_enddate contracts.enddate%TYPE;
 	t_startdate contracts.startdate%TYPE;
 	noHayEnd number(1);
 	noHayStart number(1);
+	cnt number;
+
+	
 BEGIN
-	SET noHayEnd =
-	CASE WHEN NOT EXISTS (select enddate From contracts 
-	where contracts.clientId = :new.clientId) THEN 1
-	ELSE 0
-	end case;
+	
+	SELECT COUNT(*) INTO noHayEnd FROM (select enddate From contracts 
+	where contracts.clientId = :new.clientId);
+	
+	IF(noHayEnd = 0) THEN
+	DBMS_OUTPUT.PUT_LINE('No hay end date');	
+	else
+	DBMS_OUTPUT.PUT_LINE('hay end date');	
+	END IF;
 
-	SET noHayStart =
-	CASE WHEN EXISTS (select startdate from contracts 	
-	where contracts.clientId = :new.clientId) THEN noHayStart = 1
-	ELSE
- 0	
-	END case;
+	SELECT COUNT (*) INTO noHayStart FROM (select startdate from contracts 	
+	where contracts.clientId = :new.clientId);
 
-	IF noHayEnd == 0 AND noHayStart == 0 then
+	IF(noHayStart = 0) THEN
+	DBMS_OUTPUT.PUT_LINE('No hay noHayStart');	
+	else
+	DBMS_OUTPUT.PUT_LINE('hay noHayStart');	
+	END IF;
+
+	
+	IF(noHayStart = 1 AND noHayEnd = 1) then
 	select enddate into t_enddate 
 	from contracts 
 	where contracts.clientId = :new.clientId;
+
 	select startdate into t_startdate 
 	from contracts 
 	where contracts.clientId = :new.clientId;
 
-		IF t_enddate IS NULL AND t_startdate IS NULL THEN
-		DBMS_OUTPUT.PUT_LINE('Puto Timmi');
-	
-		ELSIF t_enddate > :new.startdate AND t_startdate <= sysdate THEN
-				DBMS_OUTPUT.PUT_LINE('joder');			
-		END IF;
+		IF t_enddate > :new.startdate AND t_startdate <= sysdate THEN
+				DBMS_OUTPUT.PUT_LINE('HAY QUE CURRAR');			
+		END IF;	
 	ELSE
-	DBMS_OUTPUT.PUT_LINE('nO HAY NADA PRIMO');	
+		DBMS_OUTPUT.PUT_LINE('MIRAR CASOS');	
 
 	END IF;
 END triggerD;
 /
 show errors;
+
+
 
 
 insert into contracts VALUES('Timmi1','Timmi',TO_DATE('10-OCT-14', 'YYYY-MM-DD'),TO_DATE('10-OCT-18', 'YYYY-MM-DD'),'Short Timer','payo','tonto','matame','ya');
