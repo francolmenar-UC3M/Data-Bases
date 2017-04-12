@@ -1,8 +1,12 @@
 CREATE OR REPLACE VIEW All_movies AS 
-   SELECT DISTINCT movie_title FROM (((((CASTS NATURAL JOIN CASTS) JOIN PLAYERS ON actor=actor_name) 
+   SELECT DISTINCT movie_title, color, director_name, title_year, country, duration, gross, budget, director_facebook_likes, 
+                   filming_language, num_critic_for_reviews, num_voted_users, num_user_for_reviews, cast_total_facebook_likes,
+                   facenumber_in_poster, movie_imdb_link, imdb_score, content_rating, aspect_ratio, movie_facebook_likes,
+                   genre, plot_keywords, actor, facebook_likes  
+   FROM (((((CASTS NATURAL JOIN CASTS) JOIN (PLAYERS NATURAL JOIN PLAYERS) ON actor=actor_name) 
              RIGHT OUTER JOIN MOVIES ON title=movie_title) LEFT OUTER JOIN GENRES_MOVIES ON GENRES_MOVIES.title=movie_title)
              LEFT OUTER JOIN KEYWORDS_MOVIES ON KEYWORDS_MOVIES.title=movie_title)
    ORDER BY movie_title ASC;
    
-   --4755
+   
  
