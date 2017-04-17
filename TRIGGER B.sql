@@ -1,7 +1,7 @@
-CREATE OR REPLACE TRIGGER B
+
+	CREATE OR REPLACE TRIGGER B
 BEFORE INSERT ON taps_movies
 FOR EACH ROW
-
 DECLARE
 	t_enddate contracts.enddate%TYPE;
 	t_startdate contracts.startdate%TYPE;
@@ -9,12 +9,11 @@ DECLARE
 	noHayStart number(1);
 	valido number(1);
 	cnt number;
-
 BEGIN 
 SELECT COUNT(*) INTO valido FROM 
 contracts WHERE contractId = :new.contractId;
 IF valido = 0 THEN
-	RAISE EXCEPTION;
+	RAISE_APPLICATION_ERROR(-20001,'error');
 END IF;
 SELECT COUNT(*) INTO noHayEnd FROM (select enddate From contracts 
 	where contracts.contractId = :new.contractId);
@@ -29,27 +28,23 @@ SELECT COUNT(*) INTO noHayEnd FROM (select enddate From contracts
 	where contracts.contractId = :new.contractId);
 
 	IF(noHayStart = 0) THEN
-	DBMS_OUTPUT.PUT_LINE('No hay noHayStart');	
+	DBMS_OUTPUT.PUT_LINE('No hay Start date');	
 	else
-	DBMS_OUTPUT.PUT_LINE('hay noHayStart');	
+	DBMS_OUTPUT.PUT_LINE('hay Start date');	
 	END IF;
-
 	
-	IF(noHayStart = 1 AND noHayEnd = 1) then
-	select enddate into t_enddate 
-	from contracts 
-	where contracts.contractId = :new.contractId);
+		IF(noHayStart = 1 AND noHayEnd = 1) then
+		select enddate into t_enddate 
+		from contracts 
+		where contracts.contractId = :new.contractId;
 
-	select startdate into t_startdate 
-	from contracts 
-	where contracts.contractId = :new.contractId);
-	
-	IF :new.view_datetime NOT BETWEEN (t_startdate AND t_enddate) THEN RAISE EXCEPTION;
-
-EXCEPTION
-	DBMS_OUTPUT.PUT_LINE('Error');
-
-END; 
+		select startdate into t_startdate 
+		from contracts 
+		where contracts.contractId = :new.contractId;
+		
+			IF :new.view_datetime NOT BETWEEN t_startdate AND t_enddate THEN 
+				RAISE_APPLICATION_ERROR(-20001, 'View date is out of the scope of contracts');
+			END IF;
+	END IF;
+END B; 
 /
-show errors;
-	
