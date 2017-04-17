@@ -71,4 +71,4 @@ show errors;
 
 
 SELECT * FROM CONTRACTS WHERE contractId='Timmi1';
-SELECT * FROM CONTRACTS WHERE contractId='Timmi';
+SELECT * FROM CONTRACTS WHERE contractId='Timmi'; 
