@@ -1,3 +1,15 @@
+SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate, datetime FROM(
+		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate FROM(
+		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, startdate, enddate FROM(
+		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
+		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
+		FROM taps_series)
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
+		WHERE product_name= '49/47300099/48T' AND month = 'MAR-16' AND clientId = 'Short Timer')  NATURAL JOIN seasons) JOIN lic_movies ON clientId=client;
+
+
+
+
 CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
 IS
 --The month must be changed due to the language: DEC-2016 OR DIC-2016
@@ -26,13 +38,13 @@ CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 
 CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
 		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate, datetime FROM(
-		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate FROM(
+		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate FROM(
 		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, startdate, enddate FROM(
 		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
 		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
-		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput) NATURAL JOIN SEASONS) JOIN lic_series ON clientId=client;
+		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  NATURAL JOIN seasons) JOIN lic_movies ON clientId=client;
 
 BEGIN 
 		IF bill_movie %ISOPEN THEN
@@ -78,16 +90,21 @@ BEGIN
 					IF clientId.type = 'V' THEN
 							clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*CEIL(clientId.duration*(clientId.pct/100)));
 					END IF;
-					IF (clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02)) OR (clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0) THEN	
-									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN counter := counter + 1;
-									END IF;
+					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) AND ((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN	
+									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN 
+										counter := 1;
+					
+									ELSE
+							
 									clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
 									clientId.tap_costMovies := clientId.tap_costMovies*zapping;
+									END IF;
 					END IF;
 			costsMovies := clientId.tap_costMovies + costsMovies;
 		END LOOP;
 		costsMovies := costsMovies * 2;
-	
+		DBMS_OUTPUT.PUT_LINE(costsMovies  || '$');
+ 		
 		costsSeries := 0;	
 		IF bill_serie %ISOPEN THEN
 				CLOSE bill_serie;
@@ -104,12 +121,16 @@ BEGIN
 					IF clientId.type = 'V' THEN
 							clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*CEIL(clientId.avgduration*(clientId.pct/100)));					
 					END IF;
-					IF (clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02)) OR (clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0) THEN					
-									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN counter := counter + 1;
-									END IF;
+					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) AND ((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN					
+									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN 
+										counter := counter + 1;
+									
+									ELSE
+									
 									clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);
 									clientId.tap_costSeries := clientId.tap_costSeries*zapping;
-					END IF;
+									END IF;		
+				END IF;
 			costsSeries := clientId.tap_costSeries + costsSeries;
 		END LOOP;
 		total_cost := costsSeries + costsMovies + total_cost;	
@@ -136,6 +157,6 @@ END;
 declare
 result number;
 begin
-result:=bill('Timmi','NOV-13','Short Timer');
+result:=bill('49/47300099/48T','MAR-16','Short Timer');
 end;
 /
