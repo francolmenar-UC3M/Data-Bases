@@ -1,3 +1,18 @@
+SELECT clientId,contractId, duration, product_name,tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
+		SELECT clientId,contractId,title1, product_name,tap_cost as tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
+		SELECT clientId, contractId,title1, contract_type, month, pct FROM(
+		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, pct
+		FROM taps_movies)
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= 'Short Timer' AND month = 'DEC-2016' AND clientId = '58/10070434/04T')) JOIN movies ON title1=movie_title;
+
+
+
+
+
+
+
+
+
 CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
 
 IS
