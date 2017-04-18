@@ -8,12 +8,15 @@ IS
 		costsMovies NUMBER;
 		costsSeries NUMBER;
 		i NUMBER;
+		t_enddate contracts.enddate%TYPE;
+		t_startdate contracts.startdate%TYPE;
+		t_viewdate taps_movies.view_datetime%TYPE;
 
 CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
 		SELECT title1, clientId,contractId, duration, product_name,tap_costMovies,month,daytime, type, zapp, ppm, ppd, promo, pct FROM(
 		SELECT clientId,contractId,title1, product_name,tap_cost as tap_costMovies,month,daytime, type, zapp, ppm, ppd, promo, pct FROM(
 		SELECT clientId, contractId,title1, contract_type, month, pct, daytime FROM(
-		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, to_char(view_datetime, 'DD-MON-YYYY') AS daytime, pct
+		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, view_datetime AS daytime, pct
 		FROM taps_movies)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= productInput AND month = monthInput 
 		AND clientId = clientInput)) JOIN movies ON title1=movie_title;
@@ -22,7 +25,7 @@ CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration FROM(
 		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct FROM(
 		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct FROM(
-		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month, to_char(view_datetime, 'DD-MON-YYYY') AS daytime,season, episode, pct
+		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month, view_datetime AS daytime,season, episode, pct
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
 		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput) NATURAL JOIN SEASONS;
@@ -75,12 +78,20 @@ BEGIN
 					END IF;
 			costsSeries := clientId.tap_costSeries + costsSeries;
 		END LOOP;
-		IF clientId.startdate = monthInput THEN 
-		total_cost := costsSeries + costsMovies + total_cost;
-		DBMS_OUTPUT.PUT_LINE(total_cost || '$');
-		RETURN total_cost;
-		ELSE ADD_MONTH(viewdate,8);
+		
+		i := 0;
+		IF t_startdate = monthInput THEN 
+			total_cost := costsSeries + costsMovies + total_cost;
+			DBMS_OUTPUT.PUT_LINE(total_cost || '$');
+			RETURN total_cost;
+		ELSE 
+		WHILE i<8 LOOP
+				ADD_MONTH(t_viewdate,8);
+				 i := i+1;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE(t_viewdate);
 		END IF;
+		
 END;
 /	
 
