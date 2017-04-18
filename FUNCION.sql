@@ -52,7 +52,7 @@ BEGIN
 							clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);						
 					END IF;
 					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) THEN					
-									clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
+									clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*CEIL(clientId.duration*(clientId.pct/100)));
 									clientId.tap_costMovies := clientId.tap_costMovies*zapping;
 					END IF;
 			costsMovies := clientId.tap_costMovies + costsMovies;
@@ -71,7 +71,7 @@ BEGIN
 							clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);						
 					END IF;
 					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) THEN					
-									clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);
+									clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*CEIL(clientId.avgduration*(clientId.pct/100)));
 									clientId.tap_costSeries := clientId.tap_costSeries*zapping;
 					END IF;
 			costsSeries := clientId.tap_costSeries + costsSeries;
