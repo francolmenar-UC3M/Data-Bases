@@ -1,20 +1,4 @@
-SELECT clientId,contractId, duration, product_name,tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
-		SELECT clientId,contractId,title1, product_name,tap_cost as tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
-		SELECT clientId, contractId,title1, contract_type, month, pct FROM(
-		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, pct
-		FROM taps_movies)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= 'Short Timer' AND month = 'DEC-2016' AND clientId = '58/10070434/04T')) JOIN movies ON title1=movie_title;
-
-
-
-
-
-
-
-
-
 CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
-
 IS
 		total_cost NUMBER;
 		zapping NUMBER;
@@ -22,20 +6,19 @@ IS
 		costsSeries NUMBER;
 		i NUMBER;
 
-		--TIMMY para de ver las pelis y vuelve a verlas para terminarlas (4 - 8)
-
 CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
 		SELECT clientId,contractId, duration, product_name,tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
 		SELECT clientId,contractId,title1, product_name,tap_cost as tap_costMovies,month, type, zapp, ppm, ppd, promo, pct FROM(
 		SELECT clientId, contractId,title1, contract_type, month, pct FROM(
 		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YYYY') AS month, pct
 		FROM taps_movies)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= productInput AND month = monthInput AND clientId = clientInput)) JOIN movies ON title1=movie_title;
+		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= productInput AND month = monthInput 
+		AND clientId = clientInput)) JOIN movies ON title1=movie_title;
 
 CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
-		SELECT clientId,contractId, product_name,tap_cost as tap_costSeries,month,type, zapp, ppm, ppd, promo FROM(
-		SELECT clientId, contractId, contract_type, month FROM(
-		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month
+		SELECT clientId,contractId, product_name,tap_cost as tap_costSeries,month,type, zapp, ppm, ppd, promo, season, episode FROM(
+		SELECT clientId, contractId, contract_type, month, season, episode FROM(
+		SELECT title,  contractId, to_char(view_datetime, 'MON-YYYY') AS month, season, episode
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
 		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput;
@@ -68,7 +51,6 @@ BEGIN
 									clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
 					END IF;
 			costsMovies := clientId.tap_costMovies + costsMovies;
-			DBMS_OUTPUT.PUT_LINE(costsMovies);
 		END LOOP;
 		costsMovies := costsMovies * 2;
 	
@@ -86,11 +68,9 @@ BEGIN
 END;
 /	
 
-
 declare
 result number;
 begin
-result:=bill('86/83744772/18T','MAR-2016','Low Cost Rate');
+result:=bill('58/10070434/04T','DIC-2016','Short Timer');
 end;
 /
-
