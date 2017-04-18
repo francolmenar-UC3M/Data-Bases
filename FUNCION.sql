@@ -47,7 +47,7 @@ BEGIN
 		FOR clientId IN bill_movie(clientInput, monthInput, productInput)
 		LOOP
 			zapping := 1;
-			IF clientId.zapp > clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
+			IF clientId.zapp >= clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
 					IF clientId.type = 'V' THEN
 							clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);						
 					END IF;
@@ -66,7 +66,7 @@ BEGIN
 		FOR clientId IN bill_serie(clientInput, monthInput, productInput)
 		LOOP
 			zapping := 1;
-			IF clientId.zapp > clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
+			IF clientId.zapp >= clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
 					IF clientId.type = 'V' THEN
 							clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);						
 					END IF;
