@@ -6,10 +6,11 @@ IS
 		costsMovies NUMBER;
 		costsSeries NUMBER;
 		newmonth DATE;
+		t_startdateaux VARCHAR2(9);
 		t_enddate contracts.enddate%TYPE;
 		t_startdate contracts.startdate%TYPE;
 		t_viewdate taps_movies.view_datetime%TYPE;
-		t_promo products.promo%TYPE;
+		t_promo NUMBER;
 		discount NUMBER;
 
 CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
@@ -35,14 +36,30 @@ BEGIN
 				CLOSE bill_movie;
 			END IF;		
 		CASE productInput 
-				WHEN 'Free Rider' THEN  total_cost := 10;
-				WHEN 'Premium Rider' THEN total_cost := 39;
-				WHEN 'TVrider' THEN total_cost := 29;
-				WHEN 'Flat Rate Lover' THEN total_cost := 39;
-				WHEN 'Short Timer' THEN total_cost := 15;
-				WHEN 'Content Master' THEN total_cost := 20;
-				WHEN 'Boredom Fighter' THEN total_cost := 10;
-				WHEN 'Low Cost Rate' THEN total_cost := 0;
+				WHEN 'Free Rider' THEN  
+					total_cost := 10;
+					t_promo := 0.05;
+				WHEN 'Premium Rider' THEN 
+					total_cost := 39;
+					t_promo := 0.03;
+				WHEN 'TVrider' THEN 
+					total_cost := 29;
+					t_promo := 0;
+				WHEN 'Flat Rate Lover' THEN 
+					total_cost := 39;
+					t_promo := 0.05;
+				WHEN 'Short Timer' THEN 
+					total_cost := 15;
+					t_promo := 0.03;
+				WHEN 'Content Master' THEN 
+					total_cost := 20;
+					t_promo := 0.03;
+				WHEN 'Boredom Fighter' THEN 
+					total_cost := 10;
+					t_promo := 0;
+				WHEN 'Low Cost Rate' THEN 
+					total_cost := 0;
+					t_promo := 0.03;
 		END CASE;
 		
 		costsMovies := 0;
@@ -50,7 +67,7 @@ BEGIN
 		LOOP
 			IF t_startdate IS NULL THEN 
 				t_startdate := clientId.startdate;
-				t_enddate := clientId.enddate;
+				t_enddate := clientId.enddate;				
 			END IF;
 			zapping := 1;
 			IF clientId.zapp >= clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
@@ -88,21 +105,19 @@ BEGIN
 		total_cost := costsSeries + costsMovies + total_cost;	
 
 		discount := 0;
+		t_startdateaux := TO_CHAR(t_startdate, 'MON-YY');
+		t_startdate := TO_DATE(t_startdateaux, 'MON-YY');
 		newmonth := TO_DATE(monthInput, 'MON-YY');
-		DBMS_OUTPUT.PUT_LINE(newmonth);
-		DBMS_OUTPUT.PUT_LINE(t_startdate);
-		DBMS_OUTPUT.PUT_LINE(t_enddate);
 		--If no movies or series were watched in the inputmonth t_startdate and t_enddate are not initialized
-		WHILE t_startdate < newmonth LOOP
+		WHILE t_startdate <= newmonth LOOP
 				IF t_startdate = newmonth THEN
-				t_promo := (t_promo/100);
 				discount := t_promo*total_cost;
-				DBMS_OUTPUT.PUT_LINE(discount|| 'PROMO MONEY BITHCES $');
 				EXIT;
 				END IF;
 				newmonth := ADD_MONTHS(newmonth,-8);
 		END LOOP;
-		total_cost := total_cost-discount;		
+		total_cost := total_cost-discount;	
+        	total_cost := ROUND(total_cost, 2);		
 		DBMS_OUTPUT.PUT_LINE(total_cost|| '$');
 		RETURN total_cost;
 END;
@@ -111,6 +126,6 @@ END;
 declare
 result number;
 begin
-result:=bill('49/47300099/48T','OCT-14','Short Timer');
+result:=bill('Timmi','NOV-13','Short Timer');
 end;
 /
