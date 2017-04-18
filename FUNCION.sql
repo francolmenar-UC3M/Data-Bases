@@ -75,9 +75,12 @@ BEGIN
 					END IF;
 			costsSeries := clientId.tap_costSeries + costsSeries;
 		END LOOP;
+		IF clientId.startdate = monthInput THEN 
 		total_cost := costsSeries + costsMovies + total_cost;
 		DBMS_OUTPUT.PUT_LINE(total_cost || '$');
 		RETURN total_cost;
+		ELSE ADD_MONTH(viewdate,8);
+		END IF;
 END;
 /	
 
