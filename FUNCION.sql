@@ -37,16 +37,17 @@ CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		AND clientId = clientInput)) JOIN movies ON title1=movie_title)LEFT OUTER JOIN lic_movies ON clientId=client AND title1 = title;
 
 CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
-		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate, datetime FROM(
+		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode2, pct, avgduration, startdate, enddate, datetime FROM(
+		SELECT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, avgduration, startdate, enddate, datetime FROM(
 		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season as season2, episode as episode2, pct, startdate, enddate FROM(
 		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, startdate, enddate FROM(
 		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
 		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
-		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  JOIN seasons 
-		ON title2=title AND season2=season) 
-		LEFT OUTER JOIN lic_series ON (clientId=client AND title2 = title AND season2 = season AND episode2 = episode);
+		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  JOIN seasons
+		ON title2=title AND season2=season)
+		LEFT OUTER JOIN lic_series ON (clientId=client AND title2 = title AND season2 = season AND episode2 = episode));
 
 BEGIN
 		IF bill_movie %ISOPEN THEN
