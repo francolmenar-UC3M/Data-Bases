@@ -102,7 +102,7 @@ CREATE OR REPLACE VIEW predictSerie AS
            AND clientId = clientId1))
      ANTI JOIN (
        SELECT title, season, episodes FROM 
-       SEASONS RDER BY title, season)
+       SEASONS ORDER BY title, season)
      ON episode = episodes
      where title1 = title
      AND season1 = season
