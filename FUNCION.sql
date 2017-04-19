@@ -1,28 +1,3 @@
-		SELECT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, avgduration, startdate, enddate, datetime FROM(		
-		SELECT DISTINCT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, startdate, enddate,avgduration FROM(
-		SELECT title as title2, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season  as season2, episode as episode2, pct, startdate, enddate FROM(
-		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
-		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
-		FROM taps_series)
-		NATURAL JOIN contracts)
-		JOIN products ON product_name=contract_type
-		WHERE product_name= 'Short Timer' AND month = 'MAR-16' AND clientId = '49/47300099/48T')
-		JOIN seasons
-		ON (title2=seasons.title AND season2=seasons.season))		
-		LEFT OUTER JOIN lic_series 
-		ON clientId=client where (title2 = title AND season2 = season AND episode2 = episode);
-
-SELECT title1, clientId,contractId, duration, product_name,tap_costMovies,month,daytime, type, zapp, ppm, ppd, promo, pct, startdate, enddate, datetime FROM(
-		SELECT title1, clientId,contractId, duration, product_name,tap_costMovies,month,daytime, type, zapp, ppm, ppd, promo, pct, startdate, enddate FROM(
-		SELECT clientId,contractId,title1, product_name,tap_cost as tap_costMovies,month,daytime, type, zapp, ppm, ppd, promo, pct, startdate, enddate FROM(
-		SELECT clientId, contractId,title1, contract_type, month, pct, daytime, startdate, enddate FROM(
-		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime, pct
-		FROM taps_movies)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= 'Short Timer' AND month = 'MAR-16'
-		AND clientId = '49/47300099/48T')) JOIN movies ON title1=movie_title)LEFT OUTER JOIN lic_movies ON clientId=client AND title1 = title;
-
-		
-		
 CREATE OR REPLACE FUNCTION bill (clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) RETURN NUMBER
 IS
 --The month must be changed due to the language: DEC-2016 OR DIC-2016
@@ -47,8 +22,8 @@ CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		SELECT title AS title1, contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime, pct
 		FROM taps_movies)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= productInput AND month = monthInput
-		AND clientId = clientInput)) JOIN movies ON title1=movie_title)LEFT OUTER JOIN lic_movies ON clientId=client AND title1 = title;
-
+		AND clientId = clientInput)) JOIN movies ON title1=movie_title)LEFT OUTER JOIN lic_movies ON clientId=client AND title1 = title; 
+		
 CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
 		SELECT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, avgduration, startdate, enddate, datetime FROM(		
 		SELECT DISTINCT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, startdate, enddate,avgduration FROM(
@@ -140,14 +115,19 @@ BEGIN
 					IF clientId.type = 'V' THEN
 							clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*CEIL(clientId.avgduration*(clientId.pct/100)));
 					END IF;
-					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) AND ((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN
-									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN
-										counter := counter + 1;
-									ELSE
-									clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);
-									clientId.tap_costSeries := clientId.tap_costSeries*zapping;
+					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) THEN  
+									IF((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN --Licencia mala
+										IF (clientId.datetime < clientId.daytime AND counter = 0) THEN
+											counter := 1;
+										ELSE
+										clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);
+										clientId.tap_costSeries := clientId.tap_costSeries*zapping;
+										END IF;
+									ELSIF (clientId.datetime IS NULL) THEN --Licencia null
+										clientId.tap_costSeries := clientId.tap_costSeries+(clientId.ppm*clientId.avgduration);
+										clientId.tap_costSeries := clientId.tap_costSeries*zapping;
 									END IF;
-				END IF;
+					END IF;
 			costsSeries := clientId.tap_costSeries + costsSeries;
 		END LOOP;
 		total_cost := costsSeries + costsMovies + total_cost;
@@ -174,6 +154,16 @@ END;
 declare
 result number;
 begin
-result:=bill('49/47300099/48T','MAR-16','Short Timer');
+result:=bill('49/47300099/48T','FEB-16','Short Timer');
 end;
 /
+
+
+declare
+ result number;
+ begin
+ result:=bill('86/49576948/32T','FEB-16','Flat Rate Lover');
+ end;
+ /
+
+ SELECT contract_type FROM contracts WHERE contractId = 'GN65709/12';
