@@ -81,30 +81,30 @@ SELECT * FROM PredictTVseriesTapsMax;
 
 
 CREATE OR REPLACE VIEW predictSerie AS
-SELECT clientId, title1, (episode+1) AS nextEpisode, season1
-from (SELECT * FROM(
-SELECT clientId, title1, episode, season1, RANK() OVER 
-(PARTITION BY clientId ORDER BY mostRecent desc) as ultimo
-FROM (SELECT clientId, title1, episode, season1, mostRecent
-from (SELECT clientId, title as title1, episode, season as season1, mostRecent	
-FROM (SELECT clientId AS clientId1, title AS title1, max(view_datetime) AS mostRecent	
-FROM  (SELECT clientId, title, episode, season, view_datetime	
-FROM  (SELECT clientId, contractID 	
-FROM  CLIENTS NATURAL JOIN  contracts)
-NATURAL JOIN  taps_series)
-GROUP BY clientId,title) 
-JOIN (SELECT clientId, title, episode, season, view_datetime	
-FROM  (SELECT clientId, contractID 	
-FROM  CLIENTS NATURAL JOIN  contracts)
-NATURAL JOIN  taps_series)
-ON (title=title1 
-AND mostRecent= view_datetime
-AND clientId = clientId1))
-ANTI JOIN (SELECT title, season, episodes 
-FROM SEASONS
-ORDER BY title, season)
-ON episode = episodes
-where title1 = title
-AND season1 = season
-ORDER BY mostRecent desc))
-WHERE ultimo = 1);
+ SELECT clientId, title1, (episode+1) AS nextEpisode, season1 from 
+  (SELECT * FROM(
+   SELECT clientId, title1, episode, season1, RANK() OVER 
+   (PARTITION BY clientId ORDER BY mostRecent desc) as ultimo FROM (
+     SELECT clientId, title1, episode, season1, mostRecent from (
+       SELECT clientId, title as title1, episode, season as season1, mostRecent	FROM (
+         SELECT clientId AS clientId1, title AS title1, max(view_datetime) AS mostRecent FROM  (
+           SELECT clientId, title, episode, season, view_datetime	FROM (
+             SELECT clientId, contractID 	FROM  CLIENTS NATURAL 
+             JOIN  contracts)
+           NATURAL JOIN  taps_series)
+         GROUP BY clientId,title) 
+       JOIN (
+         SELECT clientId, title, episode, season, view_datetime	FROM  (
+           SELECT clientId, contractID 	FROM 
+           CLIENTS NATURAL JOIN  contracts)
+         NATURAL JOIN  taps_series)
+       ON (title=title1 AND mostRecent= view_datetime 
+           AND clientId = clientId1))
+     ANTI JOIN (
+       SELECT title, season, episodes FROM 
+       SEASONS RDER BY title, season)
+     ON episode = episodes
+     where title1 = title
+     AND season1 = season
+     ORDER BY mostRecent desc))
+   WHERE ultimo = 1);
