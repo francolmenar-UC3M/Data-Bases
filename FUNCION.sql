@@ -1,12 +1,23 @@
-SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate, datetime FROM(
-		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate FROM(
-		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, startdate, enddate FROM(
+		SELECT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, avgduration, startdate, enddate, datetime FROM(
+		
+		SELECT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, avgduration, startdate, enddate FROM(
+		
+		
+		
+		SELECT DISTINCT title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season2, episode2, pct, startdate, enddate,avgduration FROM(
+		SELECT title as title2, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season  as season2, episode as episode2, pct, startdate, enddate FROM(
 		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
 		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
 		FROM taps_series)
-		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
-		WHERE product_name= '49/47300099/48T' AND month = 'MAR-16' AND clientId = 'Short Timer')  NATURAL JOIN seasons) JOIN lic_movies ON clientId=client;
-
+		NATURAL JOIN contracts)
+		JOIN products ON product_name=contract_type
+		WHERE product_name= 'Short Timer' AND month = 'MAR-16' AND clientId = '49/47300099/48T')
+		JOIN seasons
+		ON (title2=seasons.title AND season2=seasons.season);
+		
+		))
+		LEFT OUTER JOIN lic_series 
+		ON clientId=client where (title2 = title AND season2 = season AND episode2 = episode);
 
 
 
