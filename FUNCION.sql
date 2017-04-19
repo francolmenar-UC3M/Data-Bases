@@ -108,13 +108,17 @@ BEGIN
 					IF clientId.type = 'V' THEN
 							clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*CEIL(clientId.duration*(clientId.pct/100)));
 					END IF;
-					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) AND
-									((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN
-									IF (clientId.datetime < clientId.daytime AND counter = 0) THEN
-										counter := 1;
-									ELSE
-									clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
-									clientId.tap_costMovies := clientId.tap_costMovies*zapping;
+					IF clientId.type = 'C' AND (clientId.ppm = 0.01 OR clientId.ppm = 0.02) THEN  
+									IF((clientId.datetime > clientId.daytime) OR (clientId.datetime < clientId.daytime AND counter = 0)) THEN --Licencia mala
+										IF (clientId.datetime < clientId.daytime AND counter = 0) THEN
+											counter := 1;
+										ELSE
+										clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
+										clientId.tap_costMovies := clientId.tap_costMovies*zapping;
+										END IF;
+									ELSIF (clientId.datetime IS NULL) THEN --Licencia null
+										clientId.tap_costMovies := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
+										clientId.tap_costMovies := clientId.tap_costMovies*zapping;
 									END IF;
 					END IF;
 			costsMovies := clientId.tap_costMovies + costsMovies;
