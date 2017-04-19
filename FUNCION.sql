@@ -35,17 +35,17 @@ CURSOR bill_movie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		FROM taps_movies)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type WHERE (product_name= productInput AND month = monthInput 
 		AND clientId = clientInput)) JOIN movies ON title1=movie_title) JOIN lic_movies ON clientId=client;
-
+		
 CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHAR2) IS
 		SELECT title, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate, datetime FROM(
-		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, avgduration, startdate, enddate FROM(
+		SELECT title as title2, clientId,contractId, product_name,tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season as season2, episode as episode2, pct, avgduration, startdate, enddate FROM(
 		SELECT title, clientId,contractId, product_name,tap_cost as tap_costSeries,month,daytime,type, zapp, ppm, ppd, promo, season, episode, pct, startdate, enddate FROM(
 		SELECT title, clientId, contractId, contract_type, month,daytime, season, episode, pct, startdate, enddate FROM(
 		SELECT title,  contractId, to_char(view_datetime, 'MON-YY') AS month, view_datetime AS daytime,season, episode, pct
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
-		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  NATURAL JOIN seasons) JOIN lic_movies ON clientId=client;
-
+		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  JOIN seasons ON title2=title AND season2=season AND episode2=episode) 
+		JOIN lic_movies ON clientId=client;
 BEGIN 
 		IF bill_movie %ISOPEN THEN
 				CLOSE bill_movie;
