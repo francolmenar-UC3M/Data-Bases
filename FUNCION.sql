@@ -46,7 +46,7 @@ CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		FROM taps_series)
 		NATURAL JOIN contracts) JOIN products ON product_name=contract_type
 		WHERE product_name= productInput AND month = monthInput AND clientId = clientInput)  JOIN seasons
-		ON title2=title AND season2=season)
+		ON (title2=seasons.title AND season2=seasons.season))
 		LEFT OUTER JOIN lic_series ON (clientId=client AND title2 = title AND season2 = season AND episode2 = episode));
 
 BEGIN
