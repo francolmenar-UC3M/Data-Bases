@@ -153,6 +153,6 @@ end;
 		INSERT INTO CLIENTS VALUES('Timmi','Timmi','Timmi','Timmi','Timmi','tuputamadre@hotmail.com',1,TO_DATE('10-OCT-13', 'YYYY-MM-DD'));
 		insert into contracts VALUES('Timmi','Timmi',TO_DATE('13-03-2010', 'DD-MM-YYYY'),TO_DATE('19-03-2019', 'DD-MM-YYYY'),'Short Timer','payo','tonto','matame','ya');
 		
-		insert into taps_movies VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),1, 'Titanic');
+		insert into taps_movies VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),99, 'Titanic');
 		
-				insert into taps_series VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),1, 'House');
+				insert into taps_series VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),99, 'House', 1, 1);
