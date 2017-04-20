@@ -36,11 +36,11 @@ CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		JOIN seasons
 		ON (title2=seasons.title AND season2=seasons.season);
 		
-CURSOR licseries(clientInput VARCHAR2, monthInput VARCHAR2) IS
-		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_series JOIN taps_series ON lic_series.title=taps_series.title)) WHERE client = clientInput;
+CURSOR licseries(clientInput VARCHAR2) IS
+		SELECT client, datetime, viewserie FROM (SELECT to_char(view_datetime, 'MON-YY') AS viewserie, client, datetime FROM (lic_series JOIN taps_series ON lic_series.title=taps_series.title)) WHERE client = clientInput;
 
-CURSOR licmovies(clientInput VARCHAR2, monthInput VARCHAR2) IS
-		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_movies JOIN taps_movies ON lic_movies.title=taps_movies.title)) WHERE client = clientInput;
+CURSOR licmovies(clientInput VARCHAR2) IS
+		SELECT client, datetime, viewsmovie FROM (SELECT to_char(view_datetime, 'MON-YY') AS viewsmovie, client, datetime FROM (lic_movies JOIN taps_movies ON lic_movies.title=taps_movies.title)) WHERE client = clientInput;
 
 BEGIN
 		IF bill_movie %ISOPEN THEN
@@ -76,24 +76,28 @@ BEGIN
 		--licenses
 		
 		licencias := 0;
-		FOR a IN licmovies(clientInput VARCHAR2, monthInput VARCHAR2) 
+		FOR a IN licmovies(clientInput) 
 		LOOP 
-			IF (a.views < a.datetime) THEN 
-				licencias := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
-				licencias := clientId.tap_costMovies*zapping;
+			zapping := 1;
+  			IF clientId.zapp >= clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
+			IF (a.viewsmovie < a.datetime) THEN 
+				licencias := a.tap_costMovies+(a.ppm*a.duration);
+				licencias := a.tap_costMovies*zapping;
 			END IF;
 		END LOOP;
 		
-		FOR b IN licseries(clientInput VARCHAR2, monthInput VARCHAR2) 
+		FOR b IN licseriecs(clientInput) 
 		LOOP 
-			IF (b.views < b.datetime) THEN 
-				licencias := clientId.tap_costSeries+(clientId.ppm*clientId.duration);
-				licencias := clientId.tap_costSeries*zapping;
+			zapping := 1;
+  			IF clientId.zapp >= clientId.pct AND clientId.ppd <> 0 THEN zapping := 0; END IF;
+			IF (b.viewserie < b.datetime) THEN 
+				licencias := b.tap_costSeries+(b.ppm*b.avgduration);
+				licencias := b.tap_costSeries*zapping;
 			END IF;
 		END LOOP;
 			
 		--PPC or PPV
-		--Movies
+		--Movies (ppm)
 		IF bill_movie %ISOPEN THEN
   			CLOSE bill_movie;
   		END IF;
@@ -112,7 +116,7 @@ BEGIN
 			costsMovies := clientId.tap_costMovies + costsMovies;
  		END LOOP;
 		
-		--Series
+		--Series(ppm)
 		IF bill_serie %ISOPEN THEN
   			CLOSE bill_serie;
   		END IF;
@@ -154,6 +158,22 @@ BEGIN
 END;
 /
 		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			
