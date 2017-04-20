@@ -93,7 +93,6 @@ BEGIN
 			costsMovies := clientId.tap_costMovies + costsMovies;
  		END LOOP;
 		costsMovies := costsMovies * 2;
-		DBMS_OUTPUT.PUT_LINE(costsMovies|| ' movies $');
 		
 		--Series(ppm)
 		costsSeries := 0;
@@ -118,33 +117,25 @@ BEGIN
 					
 			costsSeries := clientId.tap_costSeries + costsSeries;
  		END LOOP;
-		DBMS_OUTPUT.PUT_LINE(costsSeries|| ' series $');
 		total_cost := costsSeries + costsMovies + total_cost;
-		DBMS_OUTPUT.PUT_LINE(total_cost|| ' total $');
 		
 		--Promotion
 		
 		discount := 0;
-		DBMS_OUTPUT.PUT_LINE(t_startdate|| ' t_startdate $');
 		t_startdateaux := TO_CHAR(t_startdate, 'MON-YY');
 		t_startdate := TO_DATE(t_startdateaux, 'MON-YY');
 		newmonth := TO_DATE(monthInput, 'MON-YY');
-		DBMS_OUTPUT.PUT_LINE(t_startdateaux|| ' t_startdateaux $');
-		DBMS_OUTPUT.PUT_LINE(newmonth|| ' newmonth $');
-		DBMS_OUTPUT.PUT_LINE(t_startdate|| ' t_startdate $');
 		--If no movies or series were watched in the inputmonth t_startdate and t_enddate are not initialized
 		WHILE t_startdate <= newmonth LOOP
 				IF t_startdate = newmonth THEN
-				DBMS_OUTPUT.PUT_LINE(t_promo|| ' promo $');
 				discount := t_promo*total_cost;
-				DBMS_OUTPUT.PUT_LINE(discount|| ' discount $');
 				EXIT;
 				END IF;
 				newmonth := ADD_MONTHS(newmonth,-8);
 		END LOOP;
 		total_cost := total_cost-discount;
         total_cost := ROUND(total_cost, 2);
-		DBMS_OUTPUT.PUT_LINE(total_cost|| ' total final $');
+		DBMS_OUTPUT.PUT_LINE(total_cost);
 		RETURN total_cost;
 END;
 /
@@ -155,12 +146,13 @@ begin
 result:=bill('Timmi','NOV-10','Short Timer');
 end;
 /
-
-DELETE FROM Clients WHERE clientId='Timmi';
+		DELETE FROM taps_movies WHERE contractId='Timmi';
+		DELETE FROM Clients WHERE clientId='Timmi';
 		DELETE FROM CONTRACTS WHERE contractId='Timmi';
 		
 		INSERT INTO CLIENTS VALUES('Timmi','Timmi','Timmi','Timmi','Timmi','tuputamadre@hotmail.com',1,TO_DATE('10-OCT-13', 'YYYY-MM-DD'));
-		insert into contracts VALUES('Timmi','Timmi',TO_DATE('13-03-2010', 'DD-MM-YYYY'),TO_DATE('19-03-2013', 'DD-MM-YYYY'),'Short Timer','payo','tonto','matame','ya');
+		insert into contracts VALUES('Timmi','Timmi',TO_DATE('13-03-2010', 'DD-MM-YYYY'),TO_DATE('19-03-2019', 'DD-MM-YYYY'),'Short Timer','payo','tonto','matame','ya');
 		
 		insert into taps_movies VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),1, 'Titanic');
 		
+				insert into taps_series VALUES('Timmi',TO_DATE('13-11-2010', 'DD-MM-YYYY'),1, 'House');
