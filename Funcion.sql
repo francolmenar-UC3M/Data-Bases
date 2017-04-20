@@ -37,10 +37,10 @@ CURSOR bill_serie(clientInput VARCHAR2, monthInput VARCHAR2, productInput VARCHA
 		ON (title2=seasons.title AND season2=seasons.season);
 		
 CURSOR licseries(clientInput VARCHAR2, monthInput VARCHAR2) IS
-		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_series NATURAL JOIN taps_series WHERE clientInput=client));
+		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_series JOIN taps_series ON lic_series.title=taps_series.title)) WHERE client = clientInput;
 
 CURSOR licmovies(clientInput VARCHAR2, monthInput VARCHAR2) IS
-		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_movies NATURAL JOIN taps_movies WHERE clientInput=client));
+		SELECT client, datetime, views FROM (SELECT to_char(view_datetime, 'MON-YY') AS views, client, datetime FROM (lic_movies JOIN taps_movies ON lic_movies.title=taps_movies.title)) WHERE client = clientInput;
 
 BEGIN
 		IF bill_movie %ISOPEN THEN
