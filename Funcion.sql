@@ -79,14 +79,16 @@ BEGIN
 		FOR a IN licmovies(clientInput VARCHAR2, monthInput VARCHAR2) 
 		LOOP 
 			IF (a.views < a.datetime) THEN 
-				
+				licencias := clientId.tap_costMovies+(clientId.ppm*clientId.duration);
+				licencias := clientId.tap_costMovies*zapping;
 			END IF;
 		END LOOP;
 		
 		FOR b IN licseries(clientInput VARCHAR2, monthInput VARCHAR2) 
 		LOOP 
 			IF (b.views < b.datetime) THEN 
-				
+				licencias := clientId.tap_costSeries+(clientId.ppm*clientId.duration);
+				licencias := clientId.tap_costSeries*zapping;
 			END IF;
 		END LOOP;
 			
