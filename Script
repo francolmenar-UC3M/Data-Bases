@@ -26,19 +26,20 @@ FUNCTION interval_to_seconds(x INTERVAL DAY TO SECOND) RETURN NUMBER IS
   
   
 PROCEDURE PR_WORKLOAD(N NUMBER) IS
+x DATE;
 BEGIN
-
+		x := sysdate - 1/8;
 -- INSERTS
 
 FOR e IN (
 			SELECT CONTRACTID FROM CONTRACTS WHERE  ENDDATE>SYSDATE OR ENDDATE IS NULL
           ) LOOP 
 
-		INSERT INTO taps_movies VALUES (e.contractId,(sysdate - interval '3' hour),99,'Titanic');
+		INSERT INTO taps_movies VALUES (e.contractId,(x),99,'Titanic');
 		
-		INSERT INTO taps_series VALUES (e.contractId,(sysdate - interval '3' hour),99,'House',1,1);
-		INSERT INTO taps_series VALUES (e.contractId,(sysdate - interval '3' hour),99,'Sherlock',1,1);
-		INSERT INTO taps_series VALUES (e.contractId,(sysdate - interval '3' hour),99,'Columbo',1,1);
+		INSERT INTO taps_series VALUES (e.contractId,(x),99,'House',1,1);
+		INSERT INTO taps_series VALUES (e.contractId,(x),99,'Sherlock',1,1);
+		INSERT INTO taps_series VALUES (e.contractId,(x),99,'Columbo',1,1);
 
 END LOOP;
 
@@ -107,22 +108,23 @@ END PR_WORKLOAD;
 
   
 PROCEDURE PR_RESET(N NUMBER) IS
+x DATE;
   BEGIN
-	
+	x := sysdate - 1/8;
 	FOR e IN (
 				SELECT CONTRACTID, PCT, VIEW_DATETIME, TITLE FROM TAPS_MOVIES 
 	          ) LOOP 
 	
-			DELETE FROM taps_movies WHERE (e.contractId=contractId AND (sysdate - interval '3' hour)=e.view_datetime AND e.pct=99 AND e.title='Titanic');
+			DELETE FROM taps_movies WHERE (e.contractId=contractId AND (x)=e.view_datetime AND e.pct=99 AND e.title='Titanic');
 	END LOOP;
 	
 	FOR e IN (
 				SELECT CONTRACTID, PCT, VIEW_DATETIME, TITLE, SEASON, EPISODE FROM TAPS_SERIES
 	          ) LOOP 
 	          
-	    DELETE FROM taps_series WHERE (e.contractId=contractId AND (sysdate - interval '3' hour)=e.view_datetime AND e.pct=99 AND e.title='House' AND e.season=1 AND e.episode=1);
-			DELETE FROM taps_series WHERE (e.contractId=contractId AND (sysdate - interval '3' hour)=e.view_datetime AND e.pct=99 AND e.title='Columbo' AND e.season=1 AND e.episode=1);
-			DELETE FROM taps_series WHERE (e.contractId=contractId AND (sysdate - interval '3' hour)=e.view_datetime AND e.pct=99 AND e.title='Sherlock' AND e.season=1 AND e.episode=1);  
+	    DELETE FROM taps_series WHERE (e.contractId=contractId AND (x)=e.view_datetime AND e.pct=99 AND e.title='House' AND e.season=1 AND e.episode=1);
+			DELETE FROM taps_series WHERE (e.contractId=contractId AND (x)=e.view_datetime AND e.pct=99 AND e.title='Columbo' AND e.season=1 AND e.episode=1);
+			DELETE FROM taps_series WHERE (e.contractId=contractId AND (x)=e.view_datetime AND e.pct=99 AND e.title='Sherlock' AND e.season=1 AND e.episode=1);  
 	END LOOP;
  
 END PR_RESET;
