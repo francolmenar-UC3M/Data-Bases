@@ -109,21 +109,12 @@ END PR_WORKLOAD;
   
 PROCEDURE PR_RESET(N NUMBER) IS
   BEGIN
-	FOR e IN (
-				SELECT CONTRACTID, PCT, VIEW_DATETIME, TITLE FROM TAPS_MOVIES 
-	          ) LOOP 
 	
-			DELETE FROM taps_movies WHERE (e.contractId=contractId AND e.pct=99 AND e.title='Titanic');
-	END LOOP;
-	
-	FOR e IN (
-				SELECT CONTRACTID, PCT, VIEW_DATETIME, TITLE, SEASON, EPISODE FROM TAPS_SERIES
-	          ) LOOP 
-	          
-	        DELETE FROM taps_series WHERE (e.contractId=contractId AND e.pct=99 AND e.title='House' AND e.season=1 AND e.episode=1);
-			DELETE FROM taps_series WHERE (e.contractId=contractId AND e.pct=99 AND e.title='Columbo' AND e.season=1 AND e.episode=1);
-			DELETE FROM taps_series WHERE (e.contractId=contractId AND e.pct=99 AND e.title='Sherlock' AND e.season=1 AND e.episode=1);  
-	END LOOP;
+	DELETE FROM taps_movies WHERE (pct=99 AND title='Titanic');
+
+	DELETE FROM taps_series WHERE (pct=99 AND title='House' AND season=1 AND episode=1);
+	DELETE FROM taps_series WHERE (pct=99 AND title='Columbo' AND season=1 AND episode=1);
+	DELETE FROM taps_series WHERE (pct=99 AND title='Sherlock' AND season=1 AND episode=1);  
 	
 	DELETE FROM invoices; 
 	
