@@ -3,6 +3,14 @@
 -- -- Part I: Destroy (in case) existent tables -------
 -- ----------------------------------------------------
 
+DROP CLUSTER titleM;
+DROP CLUSTER cliente;
+DROP CLUSTER series;
+
+DROP INDEX t_movie;
+DROP INDEX cliente;
+DROP INDEX series;
+
 DROP TABLE MOVIES CASCADE CONSTRAINTS;
 DROP TABLE GENRES_MOVIES CASCADE CONSTRAINTS;
 DROP TABLE keywords_movies CASCADE CONSTRAINTS;
@@ -19,15 +27,12 @@ DROP TABLE LIC_MOVIES CASCADE CONSTRAINTS;
 DROP TABLE LIC_SERIES CASCADE CONSTRAINTS;
 DROP TABLE INVOICES CASCADE CONSTRAINTS;
 
-
-
 -- ----------------------------------------------------
 -- -- Part II: Create all tables ----------------------
 -- ----------------------------------------------------
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
---CREATE CLUSTER contrato (contractId VARCHAR2(15));
-CREATE CLUSTER Ctype (contract_type VARCHAR2(50));
+CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
 
 CREATE TABLE MOVIES(
 movie_title       VARCHAR2(100),
@@ -86,6 +91,7 @@ CONSTRAINT FK1_CASTS FOREIGN KEY (actor) REFERENCES PLAYERS ON DELETE CASCADE,
 CONSTRAINT FK2_CASTS FOREIGN KEY (title) REFERENCES MOVIES ON DELETE CASCADE
 )CLUSTER titleM (title);
 
+CREATE INDEX t_movie ON CLUSTER titleM;
 
 CREATE TABLE SERIES(
 title        	VARCHAR2(100),
@@ -101,7 +107,7 @@ avgduration	NUMBER(3) NOT NULL,
 episodes 	NUMBER(3) NOT NULL,
 CONSTRAINT PK_SEASONS PRIMARY KEY (title, season),
 CONSTRAINT FK_SEASONS FOREIGN KEY (title) REFERENCES SERIES ON DELETE CASCADE
-);
+)CLUSTER series (title, season, episodes);
 
 
 CREATE TABLE CLIENTS (
@@ -120,7 +126,7 @@ CONSTRAINT UK3_CLIENTS UNIQUE (phoneN),
 CONSTRAINT CH_CLIENTS CHECK (eMail LIKE '%@%.%')
 )CLUSTER cliente (clientId);
 
-
+--2KB
 CREATE TABLE products(
 product_name 	VARCHAR2(50),
 fee		NUMBER(3) NOT NULL,
@@ -133,7 +139,7 @@ promo		NUMBER(3) DEFAULT 0 NOT NULL,
 CONSTRAINT PK_products PRIMARY KEY (product_name),
 CONSTRAINT CK_products1 CHECK (type IN ('C','V')),
 CONSTRAINT CK_products2 CHECK (PROMO <= 100)
-)CLUSTER Ctype (product_name);
+);
 
 
 CREATE TABLE contracts(
@@ -150,8 +156,9 @@ CONSTRAINT PK_contracts PRIMARY KEY (contractId),
 CONSTRAINT FK_contracts1 FOREIGN KEY (clientId) REFERENCES clientS ON DELETE SET NULL,
 CONSTRAINT FK_contracts2 FOREIGN KEY (contract_type) REFERENCES products,
 CONSTRAINT CK_contracts CHECK (startdate<=enddate)
-)CLUSTER Ctype (contract_type);
+)CLUSTER cliente (clientId);
 
+CREATE INDEX t_cliente ON CLUSTER cliente;
 
 CREATE TABLE taps_movies(
 contractId VARCHAR2(10),
@@ -196,7 +203,9 @@ episode NUMBER(3) NOT NULL,
 CONSTRAINT PK_licsS PRIMARY KEY (client,title,season,episode),
 CONSTRAINT FK_licsS1 FOREIGN KEY (title,season) REFERENCES seasons,
 CONSTRAINT FK_licsS2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-);
+)CLUSTER series (title, season, episode);
+
+CREATE INDEX t_series ON CLUSTER series;
 
 CREATE TABLE invoices(
 clientId VARCHAR2(15),  
@@ -206,7 +215,3 @@ amount NUMBER(8,2) NOT NULL,
 CONSTRAINT PK_invcs PRIMARY KEY (clientId,month,year),
 CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
 );
-
-
-
-
