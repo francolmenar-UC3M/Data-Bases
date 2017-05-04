@@ -1,4 +1,4 @@
-CREATE OR REPLACE PACKAGE PKG_COSTES AS
+CREATE OR REPLACE PACKAGE PKG_COSTES AS 
 
 -- auxiliary function converting an interval into a number (milliseconds)
 	FUNCTION interval_to_seconds(x INTERVAL DAY TO SECOND) RETURN NUMBER;
