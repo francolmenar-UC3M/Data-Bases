@@ -1,4 +1,4 @@
-INSERT INTO movies
+INSERT INTO movies 
 (movie_title, 
 title_year,  
 country,
