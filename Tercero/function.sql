@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION bill (month IN NUMBER, year IN NUMBER,
 
 tariff products%ROWTYPE;
 low_date DATE; top_date DATE;
-ppcs NUMBER; ppvs NUMBER;
+ppcs NUMBER; ppvs NUMBER; 
 mins NUMBER; days NUMBER; 
 promoends DATE;
 total NUMBER;
