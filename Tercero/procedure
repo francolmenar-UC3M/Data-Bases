@@ -6,7 +6,7 @@ AS
 
 /* The structure for the table INVOICES used in this procedure is given by the following creation script
 
-CREATE TABLE invoices(
+CREATE TABLE invoices( 
 clientId VARCHAR2(15),
 month  VARCHAR2(2) ,
 year  VARCHAR2(4) ,
