@@ -24,6 +24,7 @@ DROP INDEX i_sed;
 -- ----------------------------------------------------
 -- -- Part II: Create all tables ----------------------
 -- ----------------------------------------------------
+
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
@@ -150,6 +151,8 @@ CONSTRAINT FK_contracts2 FOREIGN KEY (contract_type) REFERENCES products,
 CONSTRAINT CK_contracts CHECK (startdate<=enddate)
 )CLUSTER cliente (clientId);
 
+CREATE INDEX t_cliente ON CLUSTER cliente;
+
 CREATE TABLE taps_movies(
 contractId VARCHAR2(10),
 view_datetime DATE,
@@ -172,7 +175,6 @@ CONSTRAINT FK_tapsS1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsS2 FOREIGN KEY (title,season) REFERENCES seasons
 );
 
-
 CREATE TABLE lic_movies(
 client VARCHAR2(15),
 datetime DATE,
@@ -180,8 +182,9 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_licsM PRIMARY KEY (client,title),
 CONSTRAINT FK_licsM1 FOREIGN KEY (title) REFERENCES movies,
 CONSTRAINT FK_licsM2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-);
+)CLUSTER titleM (title);
 
+CREATE INDEX t_movie ON CLUSTER titleM;
 
 CREATE TABLE lic_series(
 client VARCHAR2(15),
@@ -202,8 +205,4 @@ year  VARCHAR2(4) ,
 amount NUMBER(8,2) NOT NULL,
 CONSTRAINT PK_invcs PRIMARY KEY (clientId,month,year),
 CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
-);
-
-CREATE INDEX t_movie ON CLUSTER titleM;
-CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
-CREATE INDEX t_cliente ON CLUSTER cliente;
+)CLUSTER cliente (clientId);
