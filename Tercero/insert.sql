@@ -1,4 +1,4 @@
-INSERT INTO movies
+INSERT INTO movies 
 (movie_title,title_year,country,color,duration,gross,budget,director_name,filming_language,num_critic_for_reviews,director_facebook_likes,num_voted_users,num_user_for_reviews, cast_total_facebook_likes,facenumber_in_poster,movie_imdb_link,imdb_score,content_rating,aspect_ratio,movie_facebook_likes)
 SELECT movie_title,TO_NUMBER(title_year),country, CASE WHEN color='Black and White' THEN 'B' WHEN color='Color' THEN 'C' ELSE null END,
        duration,gross,budget,director_name,filming_language,num_critic_for_reviews,director_facebook_likes,
