@@ -1,0 +1,23 @@
+CREATE OR REPLACE PROCEDURE billing (month IN NUMBER, year IN NUMBER) IS
+  low_date DATE; 
+  top_date DATE;
+BEGIN
+   low_date := TO_DATE(TO_CHAR(month)||'/'||TO_CHAR(year),'MM/YYYY'); 
+   top_date := ADD_MONTHS(low_date,1) -1;
+   
+     INSERT INTO Invoices
+       SELECT B.contractID, month, year, bill(month,year,B.clientID,B.contract_type)
+          FROM (SELECT clientID,MAX(startdate) startdate FROM Contracts 
+                   WHERE ((low_date BETWEEN startdate AND NVL(enddate,sysdate)) 
+                           OR (startdate BETWEEN low_date AND top_date))
+                   GROUP BY clientID) A JOIN contracts B on A.clientID=B.clientID and A.startdate=B.startdate;
+				   
+	
+	/* Note: you can't run this twice for the same month without deleting;
+                 Thus, run each iteration with a different month: billing(N); */
+
+EXCEPTION
+   WHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('There are no billing data.');
+   WHEN OTHERS THEN DBMS_OUTPUT.PUT_LINE('Billing is not possible');
+
+END; 
