@@ -160,7 +160,7 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_tapsM PRIMARY KEY (contractId,title,view_datetime),
 CONSTRAINT FK_tapsM1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsM2 FOREIGN KEY (title) REFERENCES movies
-);
+)CLUSTER titleM (title);
 
 CREATE TABLE taps_series(
 contractId VARCHAR2(10),
