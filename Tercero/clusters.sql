@@ -1,12 +1,3 @@
-DROP CLUSTER titleM;
-DROP CLUSTER cliente;
---DROP CLUSTER series;
-
-DROP INDEX t_movie;
-DROP INDEX t_cliente;
-DROP INDEX i_sed;
---DROP INDEX series;
-
 DROP TABLE MOVIES CASCADE CONSTRAINTS;
 DROP TABLE GENRES_MOVIES CASCADE CONSTRAINTS;
 DROP TABLE keywords_movies CASCADE CONSTRAINTS;
@@ -22,6 +13,13 @@ DROP TABLE TAPS_SERIES CASCADE CONSTRAINTS;
 DROP TABLE LIC_MOVIES CASCADE CONSTRAINTS;
 DROP TABLE LIC_SERIES CASCADE CONSTRAINTS;
 DROP TABLE INVOICES CASCADE CONSTRAINTS;
+
+DROP CLUSTER titleM;
+DROP CLUSTER cliente;
+
+DROP INDEX t_movie;
+DROP INDEX t_cliente;
+DROP INDEX i_sed;
 
 -- ----------------------------------------------------
 -- -- Part II: Create all tables ----------------------
@@ -207,6 +205,5 @@ CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
 );
 
 CREATE INDEX t_movie ON CLUSTER titleM;
-CREATE INDEX i_products ON products (product_name, fee, type, tap_cost, zapp, ppm, ppd, promo) TABLESPACE tabsp_2k;
 CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 CREATE INDEX t_cliente ON CLUSTER cliente;
