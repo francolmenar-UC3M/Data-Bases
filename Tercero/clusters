@@ -8,6 +8,8 @@ DROP CLUSTER cliente;
 
 DROP INDEX t_movie;
 DROP INDEX cliente;
+DROP INDEX i_sd;
+DROP INDEX i_ed;
 DROP INDEX series;
 
 DROP TABLE MOVIES CASCADE CONSTRAINTS;
@@ -32,6 +34,9 @@ DROP TABLE INVOICES CASCADE CONSTRAINTS;
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
+
+CREATE INDEX i_sd ON contracts(startdate) TABLESPACE tabsp_2k;
+CREATE INDEX i_ed ON contracts(enddate) TABLESPACE tabsp_2k;
 
 CREATE TABLE MOVIES(
 movie_title       VARCHAR2(100),
