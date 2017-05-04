@@ -188,8 +188,7 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_licsM PRIMARY KEY (client,title),
 CONSTRAINT FK_licsM1 FOREIGN KEY (title) REFERENCES movies,
 CONSTRAINT FK_licsM2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-)
-CLUSTER cliente (client);
+);
 
 
 CREATE TABLE lic_series(
@@ -201,8 +200,7 @@ episode NUMBER(3) NOT NULL,
 CONSTRAINT PK_licsS PRIMARY KEY (client,title,season,episode),
 CONSTRAINT FK_licsS1 FOREIGN KEY (title,season) REFERENCES seasons,
 CONSTRAINT FK_licsS2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-)
-CLUSTER cliente (client);
+);
 
 
 CREATE TABLE invoices(
