@@ -4,18 +4,6 @@ P_Mes VARCHAR2
 )
 AS
 
-/* The structure for the table INVOICES used in this procedure is given by the following creation script
-
-CREATE TABLE invoices( 
-clientId VARCHAR2(15),
-month  VARCHAR2(2) ,
-year  VARCHAR2(4) ,
-amount NUMBER(8,2) NOT NULL,
-CONSTRAINT PK_invcs PRIMARY KEY (clientId,month,year),
-CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
-);
-if yours has a different structure, please make convenient changes to the INSERT /UPDATE commands below  */
-
    low_date DATE:= TO_DATE('01'||P_Mes||P_Anio, 'DDMMYYYY');   -- 1º día del mes pedido
    top_date DATE := ADD_MONTHS(TO_DATE('01'||P_Mes||P_Anio, 'DDMMYYYY'),1) -1;  -- último día del mes pedido
 
