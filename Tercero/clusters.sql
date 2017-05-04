@@ -135,7 +135,7 @@ CONSTRAINT PK_products PRIMARY KEY (product_name),
 CONSTRAINT CK_products1 CHECK (type IN ('C','V')),
 CONSTRAINT CK_products2 CHECK (PROMO <= 100)
 );
-
+CREATE INDEX i_products ON products TABLESPACE tabsp_2k;
 
 CREATE TABLE contracts(
 contractId VARCHAR2(10),
