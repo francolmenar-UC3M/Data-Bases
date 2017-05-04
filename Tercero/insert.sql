@@ -1,6 +1,6 @@
 INSERT INTO movies
 (movie_title,
-title_year, 
+title_year,  
 country,
 color,
 duration,
