@@ -1,5 +1,5 @@
 INSERT INTO movies
-(movie_title,
+(movie_title, 
 title_year,  
 country,
 color,
