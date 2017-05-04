@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION bill (
 P_Cliente VARCHAR2,
 P_Anio VARCHAR2,
 P_Mes VARCHAR2,
-P_TipoContrato VARCHAR2 ) RETURN  NUMBER
+P_TipoContrato VARCHAR2 ) RETURN  NUMBER 
 AS
 -- Establezco cursores necesarios
 Producto Products%ROWTYPE;
