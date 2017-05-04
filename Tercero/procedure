@@ -19,5 +19,5 @@ BEGIN
 EXCEPTION
    WHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('There are no billing data.');
    WHEN OTHERS THEN DBMS_OUTPUT.PUT_LINE('Billing is not possible');
-
+ 
 END; 
