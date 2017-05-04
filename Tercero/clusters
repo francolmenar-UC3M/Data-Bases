@@ -30,8 +30,6 @@ CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
 
-CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
-
 CREATE TABLE MOVIES(
 movie_title       VARCHAR2(100),
 title_year        NUMBER(4),
@@ -155,6 +153,7 @@ CONSTRAINT FK_contracts2 FOREIGN KEY (contract_type) REFERENCES products,
 CONSTRAINT CK_contracts CHECK (startdate<=enddate)
 )CLUSTER cliente (clientId);
 
+CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 CREATE INDEX t_cliente ON CLUSTER cliente;
 
 CREATE TABLE taps_movies(
