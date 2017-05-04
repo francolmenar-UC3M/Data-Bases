@@ -16,10 +16,12 @@ DROP TABLE INVOICES CASCADE CONSTRAINTS;
 
 DROP CLUSTER titleM;
 DROP CLUSTER cliente;
+DROP CLUSTER titleS;
 
 DROP INDEX t_movie;
 DROP INDEX t_cliente;
 DROP INDEX i_sed;
+DROP INDEX t_series;
 
 -- ----------------------------------------------------
 -- -- Part II: Create all tables ----------------------
@@ -28,6 +30,7 @@ DROP INDEX i_sed;
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
+--CREATE CLUSTER titleS (title VARCHAR2(100)); --Aqui
 
 CREATE TABLE MOVIES(
 movie_title       VARCHAR2(100),
@@ -152,6 +155,7 @@ CONSTRAINT CK_contracts CHECK (startdate<=enddate)
 )CLUSTER cliente (clientId);
 
 CREATE INDEX t_cliente ON CLUSTER cliente;
+--CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 
 CREATE TABLE taps_movies(
 contractId VARCHAR2(10),
@@ -197,7 +201,6 @@ CONSTRAINT FK_licsS1 FOREIGN KEY (title,season) REFERENCES seasons,
 CONSTRAINT FK_licsS2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
 );
 
-
 CREATE TABLE invoices(
 clientId VARCHAR2(15),  
 month  VARCHAR2(2) ,
@@ -205,4 +208,4 @@ year  VARCHAR2(4) ,
 amount NUMBER(8,2) NOT NULL,
 CONSTRAINT PK_invcs PRIMARY KEY (clientId,month,year),
 CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
-)CLUSTER cliente (clientId);
+)CLUSTER cliente (clientId); 
