@@ -207,6 +207,6 @@ CONSTRAINT FK_invcs FOREIGN KEY (clientId) REFERENCES clients
 );
 
 CREATE INDEX t_movie ON CLUSTER titleM;
-CREATE INDEX i_products ON products TABLESPACE tabsp_2k;
+CREATE INDEX i_products ON products (product_name, fee, type, tap_cost, zapp, ppm, ppd, promo) TABLESPACE tabsp_2k;
 CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 CREATE INDEX t_cliente ON CLUSTER cliente;
