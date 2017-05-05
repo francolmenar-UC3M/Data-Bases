@@ -16,7 +16,8 @@ DROP TABLE INVOICES CASCADE CONSTRAINTS;
 
 DROP CLUSTER titleM;
 DROP CLUSTER cliente;
---DROP CLUSTER contract;
+DROP CLUSTER contract;
+
 --DROP CLUSTER titleS;
 
 DROP INDEX t_movie;
@@ -27,8 +28,8 @@ DROP INDEX dur;
 DROP INDEX series; 
 DROP INDEX viewsM;
 DROP INDEX viewsS;
+DROP INDEX t_contract;
 
---DROP INDEX t_contract;
 --DROP INDEX t_series;
 
 -- ----------------------------------------------------
@@ -37,11 +38,12 @@ DROP INDEX viewsS;
 
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
+CREATE CLUSTER contract (contractId VARCHAR2(10));
 
---CREATE CLUSTER contract (contractId VARCHAR2(10));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
 --CREATE CLUSTER titleS (title VARCHAR2(100)); 
 
+--AFTER CREATING TABLES--
 CREATE INDEX t_movie ON CLUSTER titleM;
 CREATE INDEX t_cliente ON CLUSTER cliente;
 CREATE INDEX cry ON movies (country, duration); 
@@ -50,9 +52,9 @@ CREATE INDEX i_sed ON contracts(startdate, enddate);
 CREATE INDEX series ON seasons(title, episodes, season); 
 CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
 CREATE INDEX viewsS ON taps_series(view_datetime, pct); 
+CREATE INDEX t_contract ON CLUSTER contract;
 
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
---CREATE INDEX t_contract ON CLUSTER contract;
 --CREATE INDEX t_series ON CLUSTER titleS;
 
 CREATE TABLE MOVIES(
@@ -183,7 +185,7 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_tapsM PRIMARY KEY (contractId,title,view_datetime),
 CONSTRAINT FK_tapsM1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsM2 FOREIGN KEY (title) REFERENCES movies
-)CLUSTER titleM (title); 
+)CLUSTER contract (contractId); --titleM
 
 CREATE TABLE taps_series(
 contractId VARCHAR2(10),
@@ -195,7 +197,7 @@ episode NUMBER(3) NOT NULL,
 CONSTRAINT PK_tapsS PRIMARY KEY (contractId,title,season,episode,view_datetime),
 CONSTRAINT FK_tapsS1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsS2 FOREIGN KEY (title,season) REFERENCES seasons
-);
+)CLUSTER contract (contractId); --nada
 
 CREATE TABLE lic_movies(
 client VARCHAR2(15),
