@@ -16,12 +16,12 @@ DROP TABLE INVOICES CASCADE CONSTRAINTS;
 
 DROP CLUSTER titleM;
 DROP CLUSTER cliente;
-DROP CLUSTER contract; ------------------------
+--DROP CLUSTER contract;
 DROP CLUSTER titleS;
 
 DROP INDEX t_movie;
 DROP INDEX t_cliente;
-DROP INDEX t_contract; -------------------
+--DROP INDEX t_contract;
 --DROP INDEX i_sed;
 DROP INDEX t_series;
 
