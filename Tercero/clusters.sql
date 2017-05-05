@@ -183,6 +183,8 @@ CONSTRAINT FK_tapsS1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsS2 FOREIGN KEY (title,season) REFERENCES seasons
 )CLUSTER contract (contractId); -------------------------
 
+CREATE INDEX t_contract ON CLUSTER contract;
+
 CREATE TABLE lic_movies(
 client VARCHAR2(15),
 datetime DATE,
