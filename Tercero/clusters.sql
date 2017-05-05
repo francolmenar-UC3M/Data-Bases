@@ -21,8 +21,10 @@ DROP CLUSTER cliente;
 
 DROP INDEX t_movie;
 DROP INDEX t_cliente;
+DROP INDEX i_sed;
+DROP INDEX cry;
+DROP INDEX series; --------
 --DROP INDEX t_contract;
---DROP INDEX i_sed;
 --DROP INDEX t_series;
 
 -- ----------------------------------------------------
@@ -31,12 +33,17 @@ DROP INDEX t_cliente;
 
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
---CREATE CLUSTER contract (contractId VARCHAR2(10)); ----------------------
+
+--CREATE CLUSTER contract (contractId VARCHAR2(10));
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
 --CREATE CLUSTER titleS (title VARCHAR2(100)); 
 
 CREATE INDEX t_movie ON CLUSTER titleM;
 CREATE INDEX t_cliente ON CLUSTER cliente;
+CREATE INDEX cry ON movies (country); 
+CREATE INDEX i_sed ON contracts(startdate, enddate); 
+CREATE INDEX series ON seasons(title, episodes, season); --Metido Third Query
+
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 --CREATE INDEX t_contract ON CLUSTER contract;
 --CREATE INDEX t_series ON CLUSTER titleS;
