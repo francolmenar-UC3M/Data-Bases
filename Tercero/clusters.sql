@@ -156,7 +156,7 @@ CONSTRAINT PK_contracts PRIMARY KEY (contractId),
 CONSTRAINT FK_contracts1 FOREIGN KEY (clientId) REFERENCES clientS ON DELETE SET NULL,
 CONSTRAINT FK_contracts2 FOREIGN KEY (contract_type) REFERENCES products,
 CONSTRAINT CK_contracts CHECK (startdate<=enddate)
-)CLUSTER contract (contractId); -------------------
+)CLUSTER cliente (clientId); 
 
 CREATE INDEX t_cliente ON CLUSTER cliente;
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
