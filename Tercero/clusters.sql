@@ -16,12 +16,12 @@ DROP TABLE INVOICES CASCADE CONSTRAINTS;
 
 DROP CLUSTER titleM;
 DROP CLUSTER cliente;
-
+DROP CLUSTER contract; ------------------------
 --DROP CLUSTER titleS;
 
 DROP INDEX t_movie;
 DROP INDEX t_cliente;
-
+DROP INDEX t_contract; -------------------
 --DROP INDEX i_sed;
 --DROP INDEX t_series;
 
@@ -31,7 +31,7 @@ DROP INDEX t_cliente;
 
 CREATE CLUSTER titleM (movie_title VARCHAR2(100));
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
-
+CREATE CLUSTER contract (contractId VARCHAR2(10)); ----------------------
 --CREATE CLUSTER series (title VARCHAR2(100), season NUMBER(3), episodes NUMBER(3));
 --CREATE CLUSTER titleS (title VARCHAR2(100)); 
 
@@ -92,6 +92,7 @@ CONSTRAINT FK1_CASTS FOREIGN KEY (actor) REFERENCES PLAYERS ON DELETE CASCADE,
 CONSTRAINT FK2_CASTS FOREIGN KEY (title) REFERENCES MOVIES ON DELETE CASCADE
 )CLUSTER titleM (title);
 
+CREATE INDEX t_movie ON CLUSTER titleM;
 
 CREATE TABLE SERIES(
 title        	VARCHAR2(100),
@@ -155,7 +156,7 @@ CONSTRAINT PK_contracts PRIMARY KEY (contractId),
 CONSTRAINT FK_contracts1 FOREIGN KEY (clientId) REFERENCES clientS ON DELETE SET NULL,
 CONSTRAINT FK_contracts2 FOREIGN KEY (contract_type) REFERENCES products,
 CONSTRAINT CK_contracts CHECK (startdate<=enddate)
-)CLUSTER cliente (clientId);
+)CLUSTER contract (contractId); -------------------
 
 CREATE INDEX t_cliente ON CLUSTER cliente;
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
@@ -168,7 +169,7 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_tapsM PRIMARY KEY (contractId,title,view_datetime),
 CONSTRAINT FK_tapsM1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsM2 FOREIGN KEY (title) REFERENCES movies
-)CLUSTER titleM (title);
+)CLUSTER contract (contractId); ------------------------------
 
 CREATE TABLE taps_series(
 contractId VARCHAR2(10),
@@ -180,7 +181,7 @@ episode NUMBER(3) NOT NULL,
 CONSTRAINT PK_tapsS PRIMARY KEY (contractId,title,season,episode,view_datetime),
 CONSTRAINT FK_tapsS1 FOREIGN KEY (contractId) REFERENCES contracts,
 CONSTRAINT FK_tapsS2 FOREIGN KEY (title,season) REFERENCES seasons
-);
+)CLUSTER contract (contractId); -------------------------
 
 CREATE TABLE lic_movies(
 client VARCHAR2(15),
@@ -189,9 +190,7 @@ title VARCHAR2(100) NOT NULL,
 CONSTRAINT PK_licsM PRIMARY KEY (client,title),
 CONSTRAINT FK_licsM1 FOREIGN KEY (title) REFERENCES movies,
 CONSTRAINT FK_licsM2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-)CLUSTER titleM (title);
-
-CREATE INDEX t_movie ON CLUSTER titleM;
+)CLUSTER cliente (client);
 
 CREATE TABLE lic_series(
 client VARCHAR2(15),
@@ -202,7 +201,7 @@ episode NUMBER(3) NOT NULL,
 CONSTRAINT PK_licsS PRIMARY KEY (client,title,season,episode),
 CONSTRAINT FK_licsS1 FOREIGN KEY (title,season) REFERENCES seasons,
 CONSTRAINT FK_licsS2 FOREIGN KEY (client) REFERENCES clients ON DELETE CASCADE
-);
+)CLUSTER cliente (client);
 
 CREATE TABLE invoices(
 clientId VARCHAR2(15),  
