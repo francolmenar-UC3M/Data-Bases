@@ -23,6 +23,7 @@ DROP INDEX t_movie;
 DROP INDEX t_cliente;
 DROP INDEX i_sed;
 DROP INDEX cry;
+DROP INDEX dur;
 DROP INDEX series; 
 DROP INDEX viewsM;
 DROP INDEX viewsS;
@@ -43,7 +44,8 @@ CREATE CLUSTER cliente (clientId VARCHAR2(15));
 
 CREATE INDEX t_movie ON CLUSTER titleM;
 CREATE INDEX t_cliente ON CLUSTER cliente;
-CREATE INDEX cry ON movies (country); 
+CREATE INDEX cry ON movies (country, duration); 
+CREATE INDEX dur ON seasons (avgduration); 
 CREATE INDEX i_sed ON contracts(startdate, enddate); 
 CREATE INDEX series ON seasons(title, episodes, season); 
 CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
