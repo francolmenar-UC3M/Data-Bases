@@ -23,7 +23,10 @@ DROP INDEX t_movie;
 DROP INDEX t_cliente;
 DROP INDEX i_sed;
 DROP INDEX cry;
-DROP INDEX series; --------
+DROP INDEX series; 
+DROP INDEX viewsM;
+DROP INDEX viewsS;
+
 --DROP INDEX t_contract;
 --DROP INDEX t_series;
 
@@ -42,7 +45,9 @@ CREATE INDEX t_movie ON CLUSTER titleM;
 CREATE INDEX t_cliente ON CLUSTER cliente;
 CREATE INDEX cry ON movies (country); 
 CREATE INDEX i_sed ON contracts(startdate, enddate); 
-CREATE INDEX series ON seasons(title, episodes, season); --Metido Third Query
+CREATE INDEX series ON seasons(title, episodes, season); 
+CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
+CREATE INDEX viewsS ON taps_series(view_datetime, pct); 
 
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 --CREATE INDEX t_contract ON CLUSTER contract;
