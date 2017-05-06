@@ -20,20 +20,6 @@ DROP CLUSTER contract;
 
 --DROP CLUSTER titleS;
 
-DROP INDEX t_cliente;
-DROP INDEX i_sed; 
-DROP INDEX cry; 
-DROP INDEX dur; 
-DROP INDEX series; 
-DROP INDEX viewsM; 
-DROP INDEX viewsS;
-DROP INDEX lic_movie;
-DROP INDEX lic_serie;
-
---DROP INDEX t_movie;
---DROP INDEX t_contract;
---DROP INDEX t_series;
-
 -- ----------------------------------------------------
 -- -- Part II: Create all tables ----------------------
 -- ----------------------------------------------------
@@ -230,6 +216,7 @@ CREATE INDEX dur ON seasons (avgduration);
 CREATE INDEX series ON seasons(title, episodes, season); 
 CREATE INDEX tapsM ON taps_movies(view_datetime, title);
 CREATE INDEX tapsS ON taps_series(view_datetime, title, season, episode);
+CREATE INDEX inv ON invoices(clientId, year, month);
 
 --CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
 --CREATE INDEX viewsS ON taps_series(view_datetime, pct); 
