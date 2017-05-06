@@ -225,13 +225,13 @@ CREATE INDEX lic_movie ON lic_movies(client, title, datetime);
 CREATE INDEX lic_serie ON lic_series(client, title, season, episode, datetime); 
 CREATE INDEX i_sed ON contracts(startdate, enddate, clientId);
 CREATE INDEX name ON clients(name, surname, sec_surname); 
+CREATE INDEX cry ON movies (country, duration);
+CREATE INDEX dur ON seasons (avgduration); 
+
+CREATE INDEX series ON seasons(title, episodes, season); 
 
 --CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
 --CREATE INDEX viewsS ON taps_series(view_datetime, pct); 
---CREATE INDEX cry ON movies (country, duration);
---CREATE INDEX series ON seasons(title, episodes, season); 
---CREATE INDEX dur ON seasons (avgduration); 
-
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
 --CREATE INDEX t_series ON CLUSTER titleS;
 
