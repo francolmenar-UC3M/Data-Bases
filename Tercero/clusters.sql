@@ -38,7 +38,7 @@ DROP INDEX lic_serie;
 -- -- Part II: Create all tables ----------------------
 -- ----------------------------------------------------
 
-CREATE CLUSTER titleM (movie_title VARCHAR2(100));
+CREATE CLUSTER titleM (movie_title VARCHAR2(100)); 
 CREATE CLUSTER cliente (clientId VARCHAR2(15));
 
 --CREATE CLUSTER contract (contractId VARCHAR2(10));
