@@ -218,6 +218,8 @@ CREATE INDEX tapsM ON taps_movies(view_datetime, title);
 CREATE INDEX tapsS ON taps_series(view_datetime, title, season, episode);
 CREATE INDEX inv ON invoices(clientId, year, month);
 
+--CREATE INDEX prod ON products(fee, tap_cost, zapp, ppm, ppd, promo);
+
 --CREATE INDEX viewsM ON taps_movies(view_datetime, pct); 
 --CREATE INDEX viewsS ON taps_series(view_datetime, pct); 
 --CREATE INDEX i_sed ON contracts(startdate, enddate) TABLESPACE tabsp_2k;
